@@ -9,5 +9,4 @@ class IngisisParseApplicationTests {
     @Test
     fun contextLoads() {
     }
-
 }

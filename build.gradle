@@ -59,6 +59,9 @@ kover {
     }
 }
 
+ktlint{
+}
+
 tasks.named('build') {
     dependsOn ":koverVerify", ":koverHtmlReport", "ktlintCheck"
 }
