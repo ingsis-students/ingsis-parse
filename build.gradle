@@ -3,6 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.spring' version '1.9.25'
     id 'org.springframework.boot' version '3.3.4'
     id 'io.spring.dependency-management' version '1.1.6'
+    id 'org.jlleitschuh.gradle.ktlint' version '10.2.1'
+    id 'org.jetbrains.kotlinx.kover' version '0.8.2'
 }
 
 group = 'com.students'
@@ -44,4 +46,23 @@ kotlin {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+kover {
+    useJacoco()
+    reports {
+        verify {
+            rule {
+                minBound(80)
+            }
+        }
+    }
+}
+
+tasks.named('build') {
+    dependsOn ":koverVerify", ":koverHtmlReport", "ktlintCheck"
+}
+
+tasks.named('check') {
+    dependsOn ":koverVerify", "ktlintCheck", "test"
 }
