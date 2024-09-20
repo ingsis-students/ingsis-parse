@@ -3,7 +3,10 @@ package com.students.ingisisparse.linter
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
@@ -15,6 +18,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import java.io.File
+import java.util.stream.Stream
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 internal class HttpRequestLinterTest {
@@ -25,15 +29,27 @@ internal class HttpRequestLinterTest {
     @Autowired
     private lateinit var restTemplate: TestRestTemplate
 
-    @Test
+    companion object {
+        @JvmStatic
+        fun linterTestCases(): Stream<Arguments> {
+            val linterDir = File("src/test/resources/linter")
+            return linterDir.listFiles { file -> file.isDirectory }?.flatMap { versionDir ->
+                versionDir.listFiles { file -> file.isDirectory }?.map { subDir ->
+                    Arguments.of(versionDir.name, subDir.name, subDir)
+                } ?: emptyList()
+            }?.stream() ?: Stream.empty()
+        }
+    }
+
+    @ParameterizedTest(name = "version {0} - {1}")
+    @MethodSource("linterTestCases")
+    @DisplayName("Linter Test Cases")
     @Throws(Exception::class)
-    fun `test invalid snake case`() {
-        // Read input data from files
-        val version = "1.0"
-        val code = File("src/test/resources/linter/invalid-snake-case/code.txt").readText()
-        val rules = File("src/test/resources/linter/invalid-snake-case/rules.json").readText()
+    fun `test linter cases`(version: String, name: String, subDir: File) {
+        val code = File(subDir, "code.txt").readText()
+        val rules = File(subDir, "rules.json").readText()
         val rulesJson = Json.parseToJsonElement(rules).jsonObject
-        val response = File("src/test/resources/linter/invalid-snake-case/response.txt").readText()
+        val response = File(subDir, "response.txt").readText()
 
         val requestBody = """{"version": "$version", "code": "$code", "rules": $rulesJson}"""
 

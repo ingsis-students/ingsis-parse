@@ -1,0 +1,1 @@
+let ana_lyze : number = 4;println(ana_lyze);
