@@ -62,9 +62,9 @@ ktlint{
 }
 
 tasks.named('build') {
-    dependsOn ":koverVerify", ":koverHtmlReport", "ktlintCheck"
+    dependsOn "ktlintCheck", ":koverVerify", ":koverHtmlReport"
 }
 
 tasks.named('check') {
-    dependsOn ":koverVerify", "ktlintCheck", "test"
+    dependsOn "ktlintCheck", ":koverVerify", ":koverHtmlReport"
 }
