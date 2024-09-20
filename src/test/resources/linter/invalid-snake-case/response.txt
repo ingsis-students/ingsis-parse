@@ -1,0 +1,1 @@
+Location:(line: 1, column: 5), Declaration's identifier 'ana_lyze' does not match the pattern camelCase

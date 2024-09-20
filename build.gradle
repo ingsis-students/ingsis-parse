@@ -45,6 +45,7 @@ dependencies {
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2'
     implementation 'com.github.santosbogo.PrintScript:runner:1.1.22-SNAPSHOT'
 }
 

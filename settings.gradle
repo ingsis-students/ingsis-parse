@@ -1,1 +1,9 @@
 rootProject.name = 'ingisis-parse'
+
+/*
+includeBuild('../../PrintScript') {
+    dependencySubstitution {
+        substitute module('org.example:runner') using project(':runner')
+    }
+}
+*/
