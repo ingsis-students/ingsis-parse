@@ -23,7 +23,16 @@ configurations {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/santosbogo/printscript")
+        credentials {
+            username = project.findProperty("github.user") ?: System.getenv("USER")
+            password = project.findProperty("github.token") ?: System.getenv("TOKEN")
+        }
+    }
 }
 
 dependencies {
@@ -35,6 +44,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    implementation 'com.github.santosbogo.PrintScript:runner:1.1.22-SNAPSHOT'
 }
 
 kotlin {
