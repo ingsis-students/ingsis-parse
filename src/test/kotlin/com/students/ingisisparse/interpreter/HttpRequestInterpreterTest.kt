@@ -1,7 +1,5 @@
-package com.students.ingisisparse.linter
+package com.students.ingisisparse.interpreter
 
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.params.ParameterizedTest
@@ -21,7 +19,7 @@ import java.io.File
 import java.util.stream.Stream
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-internal class HttpRequestLinterTest {
+internal class HttpRequestInterpreterTest {
 
     @LocalServerPort
     private val port: Int = 0
@@ -31,9 +29,9 @@ internal class HttpRequestLinterTest {
 
     companion object {
         @JvmStatic
-        fun linterTestCases(): Stream<Arguments> {
-            val linterDir = File("src/test/resources/linter")
-            return linterDir.listFiles { file -> file.isDirectory }?.flatMap { versionDir ->
+        fun interpreterTestCases(): Stream<Arguments> {
+            val interpreterDir = File("src/test/resources/interpreter")
+            return interpreterDir.listFiles { file -> file.isDirectory }?.flatMap { versionDir ->
                 versionDir.listFiles { file -> file.isDirectory }?.map { subDir ->
                     Arguments.of(versionDir.name, subDir.name, subDir)
                 } ?: emptyList()
@@ -42,16 +40,14 @@ internal class HttpRequestLinterTest {
     }
 
     @ParameterizedTest(name = "version {0} - {1}")
-    @MethodSource("linterTestCases")
-    @DisplayName("Linter Test Cases")
+    @MethodSource("interpreterTestCases")
+    @DisplayName("Interpreter Test Cases")
     @Throws(Exception::class)
-    fun `test linter cases`(version: String, name: String, subDir: File) {
+    fun `test interpreter cases`(version: String, name: String, subDir: File) {
         val code = File(subDir, "code.txt").readText()
-        val rules = File(subDir, "rules.json").readText()
-        val rulesJson = Json.parseToJsonElement(rules).jsonObject
         val response = File(subDir, "response.txt").readText()
 
-        val requestBody = """{"version": "$version", "code": "$code", "rules": $rulesJson}"""
+        val requestBody = """{"version": "$version", "code": "$code"}"""
 
         val headers = HttpHeaders().apply {
             contentType = MediaType.APPLICATION_JSON
@@ -59,7 +55,7 @@ internal class HttpRequestLinterTest {
 
         val entity = HttpEntity(requestBody, headers)
 
-        val url = "http://localhost:$port/analyze"
+        val url = "http://localhost:$port/interpret"
         val result = restTemplate.exchange(url, HttpMethod.POST, entity, String::class.java)
 
         assertThat(result.statusCode).isEqualTo(HttpStatus.OK)

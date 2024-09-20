@@ -1,7 +1,5 @@
-package com.students.ingisisparse.linter
+package com.students.ingisisparse.interpreter
 
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.params.ParameterizedTest
@@ -18,19 +16,19 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.io.File
 import java.util.stream.Stream
 
-@WebMvcTest(LinterController::class)
-internal class WebMockLinterTest {
+@WebMvcTest(InterpreterController::class)
+internal class WebMockInterpreterTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
 
     @MockBean
-    private lateinit var service: LinterService
+    private lateinit var service: InterpreterService
 
     companion object {
         @JvmStatic
-        fun linterTestCases(): Stream<Arguments> {
-            val linterDir = File("src/test/resources/linter")
+        fun interpreterTestCases(): Stream<Arguments> {
+            val linterDir = File("src/test/resources/interpreter")
             return linterDir.listFiles { file -> file.isDirectory }?.flatMap { versionDir ->
                 versionDir.listFiles { file -> file.isDirectory }?.map { subDir ->
                     Arguments.of(versionDir.name, subDir)
@@ -40,21 +38,19 @@ internal class WebMockLinterTest {
     }
 
     @ParameterizedTest(name = "version {0} - {1}")
-    @MethodSource("linterTestCases")
-    @DisplayName("Linter Test Cases")
+    @MethodSource("interpreterTestCases")
+    @DisplayName("Interpreter Test Cases")
     @Throws(Exception::class)
-    fun `test linter cases`(version: String, subDir: File) {
+    fun `test interpreter cases`(version: String, subDir: File) {
         val code = File(subDir, "code.txt").readText()
-        val rules = File(subDir, "rules.json").readText()
-        val rulesJson = Json.parseToJsonElement(rules).jsonObject
         val response = File(subDir, "response.txt").readText()
 
-        val requestBody = """{"version": "$version", "code": "$code", "rules": $rulesJson}"""
+        val requestBody = """{"version": "$version", "code": "$code"}"""
 
-        Mockito.`when`(service.analyze(version, code, rulesJson)).thenReturn(listOf(response))
+        Mockito.`when`(service.interpret(version, code)).thenReturn(listOf(response))
 
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/analyze")
+            MockMvcRequestBuilders.post("/interpret")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody)
         )
