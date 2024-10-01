@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  api:
+    container_name: "printscript-api"
+    build:
+      context: .
+      dockerfile: Dockerfile.multi
+    ports:
+      - 8081:8080
