@@ -29,4 +29,5 @@ if [ $ktlint_check_status -ne 0 ]; then
 fi
 
 # If everything passed, allow the commit
+echo "Pre-commit checks passed. Committing..."
 exit 0
