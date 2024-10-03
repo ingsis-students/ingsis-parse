@@ -1,4 +1,4 @@
-package com.students.ingisisparse
+package com.students.ingisisparse.linter
 
 import com.fasterxml.jackson.databind.JsonNode
 import kotlinx.serialization.json.JsonObject

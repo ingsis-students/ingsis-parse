@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# Run ktlintFormat
+./gradlew ktlintFormat
+ktlint_status=$?
+
+git add -u
+
+# Run the tests
+./gradlew test
+test_status=$?
+
+# If either of the commands fail, prevent the commit
+if [ $test_status -ne 0 ] || [ $ktlint_status -ne 0 ]; then
+  echo "Pre-commit checks failed. Please fix the issues before committing."
+  echo "Tests status: $test_status"
+  echo "Ktlint Format status: $ktlint_status"
+  exit 1
+fi
+
+# Run ktlintCheck for additional checks
+./gradlew ktlintCheck
+ktlint_check_status=$?
+
+# If ktlintCheck fails, prevent the commit
+if [ $ktlint_check_status -ne 0 ]; then
+  echo "Ktlint check failed. Run ./gradlew ktlintCheck for additional information."
+  exit 1
+fi
+
+# If everything passed, allow the commit
+exit 0
