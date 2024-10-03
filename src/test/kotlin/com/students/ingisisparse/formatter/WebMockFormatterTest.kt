@@ -30,8 +30,8 @@ internal class WebMockFormatterTest {
     companion object {
         @JvmStatic
         fun formatterTestCases(): Stream<Arguments> {
-            val linterDir = File("src/test/resources/formatter")
-            return linterDir.listFiles { file -> file.isDirectory }?.flatMap { versionDir ->
+            val formatterDir = File("src/test/resources/formatter")
+            return formatterDir.listFiles { file -> file.isDirectory }?.flatMap { versionDir ->
                 versionDir.listFiles { file -> file.isDirectory }?.map { subDir ->
                     Arguments.of(versionDir.name, subDir)
                 } ?: emptyList()

@@ -1,4 +1,4 @@
-package com.students.ingisisparse.interpreter
+package com.students.ingisisparse.validate
 
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.DisplayName
@@ -16,20 +16,20 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.io.File
 import java.util.stream.Stream
 
-@WebMvcTest(InterpreterController::class)
-internal class WebMockInterpreterTest {
+@WebMvcTest(ValidateController::class)
+internal class WebMockValidateTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
 
     @MockBean
-    private lateinit var service: InterpreterService
+    private lateinit var service: ValidateService
 
     companion object {
         @JvmStatic
-        fun interpreterTestCases(): Stream<Arguments> {
-            val interpreterDir = File("src/test/resources/interpreter")
-            return interpreterDir.listFiles { file -> file.isDirectory }?.flatMap { versionDir ->
+        fun validateTestCases(): Stream<Arguments> {
+            val validateDir = File("src/test/resources/validate")
+            return validateDir.listFiles { file -> file.isDirectory }?.flatMap { versionDir ->
                 versionDir.listFiles { file -> file.isDirectory }?.map { subDir ->
                     Arguments.of(versionDir.name, subDir)
                 } ?: emptyList()
@@ -38,19 +38,19 @@ internal class WebMockInterpreterTest {
     }
 
     @ParameterizedTest(name = "version {0} - {1}")
-    @MethodSource("interpreterTestCases")
-    @DisplayName("Interpreter Test Cases")
+    @MethodSource("validateTestCases")
+    @DisplayName("Validate Test Cases")
     @Throws(Exception::class)
-    fun `test interpreter cases`(version: String, subDir: File) {
+    fun `test validate cases`(version: String, subDir: File) {
         val code = File(subDir, "code.txt").readText()
         val response = File(subDir, "response.txt").readText()
 
         val requestBody = """{"version": "$version", "code": "$code"}"""
 
-        Mockito.`when`(service.interpret(version, code)).thenReturn(listOf(response))
+        Mockito.`when`(service.validate(version, code)).thenReturn(listOf(response))
 
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/interpret")
+            MockMvcRequestBuilders.post("/validate")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody)
         )
