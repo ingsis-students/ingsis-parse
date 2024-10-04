@@ -1,0 +1,26 @@
+name: continuous integration
+
+on:
+    push:
+        branches:
+            # incluyo todas
+            - '*'
+    pull_request:
+        branches:
+            - '*'
+jobs:
+    integration:
+        runs-on: ubuntu-latest
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+
+            -   name: Set up JDK
+                uses: actions/setup-java@v2
+                with:
+                    java-version: 11
+                    distribution: 'adopt'
+
+            -   name: Run Build
+                run: ./gradlew build

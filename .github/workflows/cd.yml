@@ -1,0 +1,45 @@
+name: continuous deployment
+
+on:
+    push:
+        branches:
+            - main # incluyo solo la branch main
+    workflow_run:
+        workflows: [ "continuous integration" ] # name del workflow q va primero.
+        types:
+            - completed
+
+
+
+jobs:
+    deployment:
+        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' }}
+        runs-on: ubuntu-latest
+
+        permissions: # le doy al token todos los permisos, por si no los tiene.
+            contents: read
+            packages: write
+
+        # corre en el entorno de producción.
+        # environment: production
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+
+            -   name: Set up JDK
+                uses: actions/setup-java@v2
+                with:
+                    java-version: 11
+                    distribution: 'adopt'
+
+
+            # en build.gradle se define a donde se va a publicar.
+            -   name: Publish package
+                run: ./gradlew publish --info
+                env:
+                    # actor de github q lo ejecuta
+                    GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
+
+                    # autentico la publicación del paquete.
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
