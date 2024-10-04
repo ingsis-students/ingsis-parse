@@ -3,7 +3,6 @@ name: continuous integration
 on:
     push:
         branches:
-            # incluyo todas
             - '*'
     pull_request:
         branches:
@@ -16,16 +15,13 @@ jobs:
             -   name: Checkout
                 uses: actions/checkout@v4
 
-            -   name: Set up JDK
+            -   name: Set up JDK 21
                 uses: actions/setup-java@v2
                 with:
                     java-version: 21
                     distribution: 'adopt'
 
-            - name: Configure Gradle
-              run: |
-                echo "ORG_GRADLE_PROJECT_github.user=${{ secrets.USER }}" >> $GITHUB_ENV
-                echo "ORG_GRADLE_PROJECT_github.token=${{ secrets.TOKEN }}" >> $GITHUB_ENV
-
             -   name: Run Build
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 run: ./gradlew build
