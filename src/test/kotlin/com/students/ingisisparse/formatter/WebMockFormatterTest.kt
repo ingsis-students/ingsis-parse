@@ -1,7 +1,6 @@
 package com.students.ingisisparse.formatter
 
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.params.ParameterizedTest
@@ -46,10 +45,10 @@ internal class WebMockFormatterTest {
     fun `test formatter cases`(version: String, subDir: File) {
         val code = File(subDir, "code.txt").readText()
         val rules = File(subDir, "rules.json").readText()
-        val rulesJson = Json.parseToJsonElement(rules).jsonObject
+        val rulesJson = ObjectMapper().readTree(rules)
         val response = File(subDir, "response.txt").readText()
 
-        val requestBody = """{"version": "$version", "code": "$code", "rules": $rulesJson}"""
+        val requestBody = ObjectMapper().writeValueAsString(FormatDto(version, code, rulesJson))
         Mockito.`when`(service.format(version, code, rulesJson.toString())).thenReturn(response)
 
         mockMvc.perform(

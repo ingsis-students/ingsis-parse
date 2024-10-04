@@ -51,7 +51,7 @@ internal class HttpRequestLinterTest {
         val rulesJson = Json.parseToJsonElement(rules).jsonObject
         val response = File(subDir, "response.txt").readText()
 
-        val requestBody = """{"version": "$version", "code": "$code", "rules": $rulesJson}"""
+        val requestBody = LintDto(version, code, JsonConverter.convertToJacksonJson(rulesJson))
 
         val headers = HttpHeaders().apply {
             contentType = MediaType.APPLICATION_JSON

@@ -10,4 +10,11 @@ object JsonConverter {
         }
         return JsonObject(jsonMap)
     }
+
+    fun convertToJacksonJson(jsonObject: JsonObject): Map<String, JsonNode> {
+        val jsonMap = jsonObject.mapValues { entry ->
+            com.fasterxml.jackson.databind.ObjectMapper().readTree(entry.value.toString())
+        }
+        return jsonMap
+    }
 }

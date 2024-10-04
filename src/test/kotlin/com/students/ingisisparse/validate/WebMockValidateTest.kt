@@ -1,5 +1,6 @@
 package com.students.ingisisparse.validate
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.params.ParameterizedTest
@@ -45,7 +46,7 @@ internal class WebMockValidateTest {
         val code = File(subDir, "code.txt").readText()
         val response = File(subDir, "response.txt").readText()
 
-        val requestBody = """{"version": "$version", "code": "$code"}"""
+        val requestBody = ObjectMapper().writeValueAsString(ValidateDto(version, code))
 
         Mockito.`when`(service.validate(version, code)).thenReturn(listOf(response))
 

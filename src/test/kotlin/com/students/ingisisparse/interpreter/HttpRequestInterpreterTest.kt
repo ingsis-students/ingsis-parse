@@ -37,6 +37,16 @@ internal class HttpRequestInterpreterTest {
                 } ?: emptyList()
             }?.stream() ?: Stream.empty()
         }
+
+        @JvmStatic
+        fun testEndpointTestCases(): Stream<Arguments> {
+            val testDir = File("src/test/resources/test")
+            return testDir.listFiles { file -> file.isDirectory }?.flatMap { versionDir ->
+                versionDir.listFiles { file -> file.isDirectory }?.map { subDir ->
+                    Arguments.of(versionDir.name, subDir.name, subDir)
+                } ?: emptyList()
+            }?.stream() ?: Stream.empty()
+        }
     }
 
     @ParameterizedTest(name = "version {0} - {1}")
@@ -47,7 +57,7 @@ internal class HttpRequestInterpreterTest {
         val code = File(subDir, "code.txt").readText()
         val response = File(subDir, "response.txt").readText()
 
-        val requestBody = """{"version": "$version", "code": "$code"}"""
+        val requestBody = InterpretDto(version, code)
 
         val headers = HttpHeaders().apply {
             contentType = MediaType.APPLICATION_JSON
@@ -56,6 +66,31 @@ internal class HttpRequestInterpreterTest {
         val entity = HttpEntity(requestBody, headers)
 
         val url = "http://localhost:$port/interpret"
+        val result = restTemplate.exchange(url, HttpMethod.POST, entity, String::class.java)
+
+        assertThat(result.statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(result.body).contains(response)
+    }
+
+    @ParameterizedTest(name = "version {0} - {1}")
+    @MethodSource("testEndpointTestCases")
+    @DisplayName("Test Endpoint Test Cases")
+    @Throws(Exception::class)
+    fun `test endpoint cases`(version: String, name: String, subDir: File) {
+        val code = File(subDir, "code.txt").readText()
+        val inputs = File(subDir, "inputs.txt").readLines()
+        val outputs = File(subDir, "outputs.txt").readLines()
+        val response = File(subDir, "response.txt").readText()
+
+        val requestBody = TestDto(version, code, inputs, outputs)
+
+        val headers = HttpHeaders().apply {
+            contentType = MediaType.APPLICATION_JSON
+        }
+
+        val entity = HttpEntity(requestBody, headers)
+
+        val url = "http://localhost:$port/test"
         val result = restTemplate.exchange(url, HttpMethod.POST, entity, String::class.java)
 
         assertThat(result.statusCode).isEqualTo(HttpStatus.OK)

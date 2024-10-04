@@ -1,5 +1,6 @@
 package com.students.ingisisparse.linter
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import org.hamcrest.Matchers
@@ -49,7 +50,9 @@ internal class WebMockLinterTest {
         val rulesJson = Json.parseToJsonElement(rules).jsonObject
         val response = File(subDir, "response.txt").readText()
 
-        val requestBody = """{"version": "$version", "code": "$code", "rules": $rulesJson}"""
+        val requestBody = ObjectMapper().writeValueAsString(
+            LintDto(version, code, JsonConverter.convertToJacksonJson(rulesJson))
+        )
 
         Mockito.`when`(service.analyze(version, code, rulesJson)).thenReturn(listOf(response))
 

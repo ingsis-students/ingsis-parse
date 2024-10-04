@@ -47,7 +47,7 @@ internal class HttpRequestValidateTest {
         val code = File(subDir, "code.txt").readText()
         val response = File(subDir, "response.txt").readText()
 
-        val requestBody = """{"version": "$version", "code": "$code"}"""
+        val requestBody = ValidateDto(version, code)
 
         val headers = HttpHeaders().apply {
             contentType = MediaType.APPLICATION_JSON

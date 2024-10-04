@@ -1,5 +1,6 @@
 package com.students.ingisisparse.interpreter
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.params.ParameterizedTest
@@ -45,7 +46,7 @@ internal class WebMockInterpreterTest {
         val code = File(subDir, "code.txt").readText()
         val response = File(subDir, "response.txt").readText()
 
-        val requestBody = """{"version": "$version", "code": "$code"}"""
+        val requestBody = ObjectMapper().writeValueAsString(InterpretDto(version, code))
 
         Mockito.`when`(service.interpret(version, code)).thenReturn(listOf(response))
 
