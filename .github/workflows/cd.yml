@@ -16,12 +16,9 @@ jobs:
         if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' }}
         runs-on: ubuntu-latest
 
-        permissions: # le doy al token todos los permisos, por si no los tiene.
+        permissions:
             contents: read
             packages: write
-
-        # corre en el entorno de producción.
-        # environment: production
 
         steps:
             -   name: Checkout
@@ -33,13 +30,8 @@ jobs:
                     java-version: 21
                     distribution: 'adopt'
 
-
-            # en build.gradle se define a donde se va a publicar.
             -   name: Publish package
                 run: ./gradlew publish --info
                 env:
-                    # actor de github q lo ejecuta
                     GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
-
-                    # autentico la publicación del paquete.
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
