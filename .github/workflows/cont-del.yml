@@ -37,4 +37,7 @@ jobs:
           context: .
           file: ./Dockerfile.multi
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GITHUB_ACTOR: ${{ github.actor }}
