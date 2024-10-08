@@ -48,6 +48,6 @@ jobs:
           file: ./Dockerfile.multi
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          build-args: |
-            GITHUB_ACTOR=${{ github.actor }}
-            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ github.actor }}
