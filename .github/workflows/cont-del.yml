@@ -1,12 +1,10 @@
 name: continuous delivery
+
 on:
-  push:
-    branches:
-      - main
-    workflow_run:
-      workflows: [ "continuous integration", "continuous deployment" ]
-      types:
-        - completed
+  workflow_run:
+    workflows: ["continuous deployment"]
+    types:
+      - completed
 
 env:
   REGISTRY: ghcr.io
@@ -14,7 +12,7 @@ env:
 
 jobs:
   delivery:
-    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     permissions:
