@@ -5,7 +5,7 @@ on:
     branches:
       - main
   workflow_run:
-    workflows: [ "continuous deployment" ]
+    workflows: [ "continuous integration" ]
     types:
       - completed
 
