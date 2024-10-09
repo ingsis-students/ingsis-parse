@@ -1,35 +1,17 @@
-# Primera etapa: Construcción de la aplicación con Gradle
 FROM gradle:8-jdk21 AS build
-
-# Etiqueta que indica el origen del código fuente
 LABEL org.opencontainers.image.source="https://github.com/TomasValleDuran/ingsis-parse"
 
-# Acepta los argumentos de build para GitHub credentials
 ARG GITHUB_USER
 ARG GITHUB_TOKEN
-
-# Configura gradle.properties con las credenciales de GitHub para descargar dependencias privadas
 RUN echo "github.user=$GITHUB_USER" >> /home/gradle/.gradle/gradle.properties && \
     echo "github.token=$GITHUB_TOKEN" >> /home/gradle/.gradle/gradle.properties
 
-# Copia el código fuente al contenedor
 COPY . /home/gradle/src
 WORKDIR /home/gradle/src
-
-# Compila el proyecto con Gradle
 RUN gradle assemble
 
-# Segunda etapa: Generar la imagen final más ligera
 FROM openjdk:21-slim
-
-# Exponer el puerto 8081
 EXPOSE 8081
-
-# Crear un directorio en /app
 RUN mkdir /app
-
-# Copiar el archivo JAR compilado desde la primera etapa
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/spring-boot-application.jar
-
-# Definir el punto de entrada para ejecutar la aplicación
 ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=production", "/app/spring-boot-application.jar"]
