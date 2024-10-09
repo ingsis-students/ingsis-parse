@@ -1,0 +1,38 @@
+name: continuous deployment
+
+on:
+  push:
+    branches:
+      - main # incluyo solo la branch main
+  workflow_run:
+    workflows: [ "continuous integration" ] # name del workflow q va primero.
+    types:
+      - completed
+
+
+
+jobs:
+  deployment:
+    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    name: Continuous Deployment
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      -   name: Checkout
+          uses: actions/checkout@v4
+
+      -   name: Set up JDK
+          uses: actions/setup-java@v2
+          with:
+            java-version: 21
+            distribution: 'adopt'
+
+      -   name: Publish package
+          run: ./gradlew publish --info
+          env:
+            GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
