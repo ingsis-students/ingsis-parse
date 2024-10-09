@@ -30,8 +30,8 @@ repositories {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/santosbogo/printscript")
         credentials {
-            username = project.findProperty("github.user") ?: System.getenv("GITHUB_ACTOR")
-            password = project.findProperty("github.token") ?: System.getenv("GITHUB_TOKEN")
+            username = project.findProperty("github.user") ?: System.getenv("USERNAME")
+            password = project.findProperty("github.token") ?: System.getenv("TOKEN")
         }
     }
 }
@@ -101,8 +101,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/TomasValleDuran/Ingsis-Parse")
             credentials {
-                username = project.findProperty("github.user") ?: System.getenv("GITHUB_ACTOR")
-                password = project.findProperty("github.token") ?: System.getenv("GITHUB_TOKEN")
+                username = project.findProperty("github.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("github.token") ?: System.getenv("TOKEN")
             }
         }
     }
