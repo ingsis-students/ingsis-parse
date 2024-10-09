@@ -47,6 +47,9 @@ jobs:
           password: ${{ env.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
+        env:
+          REGISTRY: ghcr.io
+          IMAGE_NAME: tomasvalleduran/ingsis-parse
         run: |
           docker build . -f Dockerfile.multi --tag ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest
           docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
