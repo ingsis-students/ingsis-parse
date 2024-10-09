@@ -8,10 +8,6 @@ on:
         branches:
             - '*'
 
-env:
-    GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
     integration:
         runs-on: ubuntu-latest
