@@ -45,5 +45,5 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build . --tag ${{REGISTRY}}/${{IMAGE_NAME}}:latest
+          docker build . --tag ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest
           docker push $REGISTRY/$IMAGE_NAME:latest
