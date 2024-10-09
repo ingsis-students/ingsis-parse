@@ -12,8 +12,8 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: tomasvalleduran/ingsis-parse
-  USERNAME: ${{ secrets.USERNAME }}
-  TOKEN: ${{ secrets.TOKEN }}
+  GITHUB_USERNAME: ${{ secrets.USERNAME }}
+  GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
 jobs:
   delivery:
@@ -40,8 +40,8 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ env.GITHUB_USERNAME }}
+          password: ${{ env.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
@@ -50,7 +50,3 @@ jobs:
           file: ./Dockerfile.multi
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-        env:
-          USERNAME: ${{ secrets.USERNAME }}
-          TOKEN: ${{ secrets.TOKEN }}
-
