@@ -19,7 +19,7 @@ jobs:
     name: Continuous Delivery
 
     permissions:
-      contents: read
+      contents: write #Por si me olvido: esto estaba en read, lo cambie para ver si magicamente funciona
       packages: write
       id-token: write
 
