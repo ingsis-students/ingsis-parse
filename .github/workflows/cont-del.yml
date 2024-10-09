@@ -50,6 +50,8 @@ jobs:
         env:
           REGISTRY: ghcr.io
           IMAGE_NAME: tomasvalleduran/ingsis-parse
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           docker build . -f Dockerfile.multi --tag ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest
           docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
