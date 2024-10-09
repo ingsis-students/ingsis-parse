@@ -14,6 +14,7 @@ on:
 
 jobs:
   delivery:
+#    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     name: Continuous Delivery
 
@@ -47,5 +48,5 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build . -f Dockerfile.multi --tag ${{env.REGISTRY}}/${{env.IMAGE_NAME}}
-          docker push $REGISTRY/$IMAGE_NAME:latest
+          docker build . -f Dockerfile.multi --tag ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
