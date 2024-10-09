@@ -3,7 +3,10 @@ name: continuous delivery
 on:
   push:
     branches:
-      - main
+      - '*'
+  pull_request:
+    branches:
+      - '*'
 #  workflow_run:
 #    workflows: [ "continuous deployment" ]
 #    types:
