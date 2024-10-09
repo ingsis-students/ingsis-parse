@@ -1,7 +1,9 @@
 FROM gradle:8-jdk21 AS build
+LABEL org.opencontainers.image.source="https://github.com/TomasValleDuran/ingsis-parse"
 COPY . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle assemble
+
 FROM openjdk:21-slim
 EXPOSE 8080
 RUN mkdir /app
