@@ -10,7 +10,7 @@ on:
             - completed
 
 env:
-    GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
+    GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
