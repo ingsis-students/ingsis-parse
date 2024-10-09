@@ -12,8 +12,8 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: tomasvalleduran/ingsis-parse
-  GITHUB_ACTOR: ${{ github.actor }}
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  USERNAME: ${{ secrets.USERNAME }}
+  TOKEN: ${{ secrets.TOKEN }}
 
 jobs:
   delivery:
