@@ -4,10 +4,10 @@ on:
   push:
     branches:
       - main
-  workflow_run:
-    workflows: [ "continuous deployment" ]
-    types:
-      - completed
+#  workflow_run:
+#    workflows: [ "continuous deployment" ]
+#    types:
+#      - completed
 
 jobs:
   delivery:
