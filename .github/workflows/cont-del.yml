@@ -41,7 +41,12 @@ jobs:
           password: ${{ env.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
-        run: |
-          docker build . -f Dockerfile.multi --tag ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest \
-           --build-arg GITHUB_USER=${{ env.GITHUB_ACTOR }} --build-arg GITHUB_TOKEN=${{ env.GITHUB_TOKEN }}
-          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile.multi
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          build-args: |
+              GITHUB_USER=${{ env.GITHUB_ACTOR }}
+              GITHUB_TOKEN=${{ env.GITHUB_TOKEN }}
