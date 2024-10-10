@@ -1,10 +1,10 @@
 FROM gradle:8-jdk21 AS build
 LABEL org.opencontainers.image.source="https://github.com/TomasValleDuran/ingsis-parse"
 
-ARG GITHUB_USER
+ARG GITHUB_ACTOR
 ARG GITHUB_TOKEN
-RUN echo "github.user=$GITHUB_USER" >> /home/gradle/.gradle/gradle.properties && \
-    echo "github.token=$GITHUB_TOKEN" >> /home/gradle/.gradle/gradle.properties
+ENV GITHUB_ACTOR=$GITHUB_USER
+ENV GITHUB_TOKEN=$GITHUB_TOKEN
 
 COPY . /home/gradle/src
 WORKDIR /home/gradle/src

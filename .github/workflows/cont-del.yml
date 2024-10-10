@@ -48,5 +48,5 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           build-args: |
-              GITHUB_USER=${{ env.GITHUB_ACTOR }}
+              GITHUB_ACTOR=${{ env.GITHUB_ACTOR }}
               GITHUB_TOKEN=${{ env.GITHUB_TOKEN }}
