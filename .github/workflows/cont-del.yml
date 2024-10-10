@@ -1,12 +1,6 @@
 name: continuous delivery
-#gei el que lee
+
 on:
-  push:
-    branches:
-      - '*'
-  pull_request:
-    branches:
-      - '*'
   workflow_run:
     workflows: [ "continuous deployment" ]
     types:

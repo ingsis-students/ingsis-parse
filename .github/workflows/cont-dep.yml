@@ -1,9 +1,6 @@
 name: continuous deployment
 
 on:
-  push:
-    branches:
-      - main # incluyo solo la branch main
   workflow_run:
     workflows: [ "continuous integration" ] # name del workflow q va primero.
     types:
