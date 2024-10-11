@@ -15,7 +15,6 @@ on:
       key:
         description: 'SSH Private Key to access the virtual machine'
         required: true
-        type: string
 
 jobs:
   update:

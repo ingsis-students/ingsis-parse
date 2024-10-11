@@ -19,7 +19,6 @@ on:
       token:
         description: 'Personal Access Token with sufficient rights to publish Docker image'
         required: true
-        type: string
 
 jobs:
   delivery:
