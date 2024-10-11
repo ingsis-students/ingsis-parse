@@ -33,5 +33,5 @@ jobs:
       - name: Publish package
         run: ./gradlew publish --info
         env:
-          GITHUB_TOKEN: ${{ inputs.token }}
+          GITHUB_TOKEN: ${{ secrets.token }}
           GITHUB_ACTOR: ${{ inputs.actor }}

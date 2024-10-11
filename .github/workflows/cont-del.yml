@@ -44,7 +44,7 @@ jobs:
         with:
           registry: ${{ inputs.registry }}
           username: ${{ inputs.actor }}
-          password: ${{ inputs.token }}
+          password: ${{ secrets.token }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
@@ -55,4 +55,4 @@ jobs:
           tags: ${{ inputs.registry }}/${{ inputs.image_name }}
           build-args: |
               GITHUB_ACTOR=${{ inputs.actor }}
-              GITHUB_TOKEN=${{ inputs.token }}
+              GITHUB_TOKEN=${{ secrets.token }}
