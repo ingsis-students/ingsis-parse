@@ -6,16 +6,20 @@ on:
       registry:
         description: 'Container registry where to publish the image'
         required: true
+        type: string
       image_name:
         description: 'Image name for the Docker Image'
         required: true
+        type: string
       actor:
         description: 'GitHub Actor'
         required: true
+        type: string
     secrets:
       token:
         description: 'Personal Access Token with sufficient rights to publish Docker image'
         required: true
+        type: string
 
 jobs:
   delivery:

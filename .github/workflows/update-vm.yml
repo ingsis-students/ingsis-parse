@@ -6,13 +6,16 @@ on:
       host:
         description: 'Virtual Machine Host IP'
         required: true
+        type: string
       user:
         description: 'Virtual Machine User'
         required: true
+        type: string
     secrets:
       key:
         description: 'SSH Private Key to access the virtual machine'
         required: true
+        type: string
 
 jobs:
   update:

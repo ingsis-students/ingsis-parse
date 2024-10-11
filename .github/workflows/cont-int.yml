@@ -6,6 +6,7 @@ on:
       token:
         description: 'Personal Access Token'
         required: true
+        type: string
 
 
 jobs:
