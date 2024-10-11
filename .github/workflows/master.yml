@@ -21,45 +21,30 @@ jobs:
   continuous-integration:
     runs-on: ubuntu-latest
     name: continuous integration
-
-    steps:
-      - name: checkout
-        uses: actions/checkout@v4
-
-      - name: continuous integration
-        uses: ./.github/workflows/cont-int.yml
-        with:
-          env_vars: ${{ toJson(env) }}
+    uses: ./.github/workflows/cont-int.yml
+    with:
+      env_vars: ${{ toJson(env) }}
 
   continuous-deployment:
     runs-on: ubuntu-latest
     name: continuous deployment
     needs: continuous-integration
-
-    steps:
-      - name: continuous deployment
-        uses: ./.github/workflows/cont-dep.yml
-        with:
-          env_vars: ${{ toJson(env) }}
+    uses: ./.github/workflows/cont-dep.yml
+    with:
+      env_vars: ${{ toJson(env) }}
 
   continuous-delivery:
     runs-on: ubuntu-latest
     name: continuous delivery
     needs: continuous-deployment
-
-    steps:
-      - name: continuous delivery
-        uses: ./.github/workflows/cont-del.yml
-        with:
-          env_vars: ${{ toJson(env) }}
+    uses: ./.github/workflows/cont-del.yml
+    with:
+      env_vars: ${{ toJson(env) }}
 
   update-virtual-machine:
     runs-on: ubuntu-latest
     name: update virtual machine
     needs: continuous-delivery
-
-    steps:
-      - name: update vm
-        uses: ./.github/workflows/update-vm.yml
-        with:
-          env_vars: ${{ toJson(env) }}
+    uses: ./.github/workflows/update-vm.yml
+    with:
+      env_vars: ${{ toJson(env) }}
