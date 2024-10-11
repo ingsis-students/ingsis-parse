@@ -19,14 +19,12 @@ env:
 
 jobs:
   continuous-integration:
-    runs-on: ubuntu-latest
     name: continuous integration
     uses: ./.github/workflows/cont-int.yml
     with:
       env_vars: ${{ toJson(env) }}
 
   continuous-deployment:
-    runs-on: ubuntu-latest
     name: continuous deployment
     needs: continuous-integration
     uses: ./.github/workflows/cont-dep.yml
@@ -34,7 +32,6 @@ jobs:
       env_vars: ${{ toJson(env) }}
 
   continuous-delivery:
-    runs-on: ubuntu-latest
     name: continuous delivery
     needs: continuous-deployment
     uses: ./.github/workflows/cont-del.yml
@@ -42,7 +39,6 @@ jobs:
       env_vars: ${{ toJson(env) }}
 
   update-virtual-machine:
-    runs-on: ubuntu-latest
     name: update virtual machine
     needs: continuous-delivery
     uses: ./.github/workflows/update-vm.yml

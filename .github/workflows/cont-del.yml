@@ -9,7 +9,6 @@ on:
 jobs:
   delivery:
     runs-on: ubuntu-latest
-    name: Continuous Delivery
 
     permissions:
       contents: read

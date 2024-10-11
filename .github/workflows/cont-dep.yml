@@ -9,7 +9,6 @@ on:
 jobs:
   deployment:
     runs-on: ubuntu-latest
-    name: Continuous Deployment
 
     permissions:
       contents: read

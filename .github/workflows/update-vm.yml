@@ -9,7 +9,6 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
-    name: Update Docker images in Virtual Machine
 
     steps:
     - name: Checkout
