@@ -23,6 +23,9 @@ jobs:
     name: continuous integration
 
     steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
       - name: continuous integration
         uses: ./.github/workflows/cont-int.yml
         with:
