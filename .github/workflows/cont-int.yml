@@ -1,9 +1,10 @@
 name: continuous integration
 
 on:
-  push:
-    branches:
-      - main
+  workflow_call:
+    inputs:
+      env_vars:
+        required: true
 
 jobs:
   integration:
@@ -21,6 +22,4 @@ jobs:
             distribution: 'adopt'
 
       -   name: Run Build
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           run: ./gradlew build

@@ -1,20 +1,13 @@
 name: continuous delivery
 
 on:
-  workflow_run:
-    workflows: [ "continuous deployment" ]
-    types:
-      - completed
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: tomasvalleduran/ingsis-parse
-  GITHUB_ACTOR: ${{ github.actor }}
-  GITHUB_TOKEN: ${{ secrets.PAT }}
+  workflow_call:
+    inputs:
+      env_vars:
+        required: true
 
 jobs:
   delivery:
-    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     name: Continuous Delivery
 

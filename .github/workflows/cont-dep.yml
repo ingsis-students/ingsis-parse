@@ -1,14 +1,13 @@
 name: continuous deployment
 
 on:
-  workflow_run:
-    workflows: [ "continuous integration" ] # name del workflow q va primero.
-    types:
-      - completed
+  workflow_call:
+    inputs:
+      env_vars:
+        required: true
 
 jobs:
   deployment:
-    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     name: Continuous Deployment
 
@@ -28,6 +27,3 @@ jobs:
 
       -   name: Publish package
           run: ./gradlew publish --info
-          env:
-            GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

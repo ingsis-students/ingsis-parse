@@ -1,0 +1,26 @@
+name: update docker images in virtual machine
+
+on:
+  workflow_call:
+    inputs:
+      env_vars:
+        required: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    name: Update Docker images in Virtual Machine
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@v1.1.0
+      with:
+        host: ${{ env.VM_HOST }}
+        username: ${{ env.VM_USER }}
+        key: ${{ env.SSH_PRIVATE_KEY }}
+        script: |
+          docker-compose -f /home/students/ingsis-infra/docker-compose.yml down
+          docker-compose -f /home/students/ingsis-infra/docker-compose.yml up -d
