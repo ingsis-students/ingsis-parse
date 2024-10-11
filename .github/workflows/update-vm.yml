@@ -3,7 +3,14 @@ name: update docker images in virtual machine
 on:
   workflow_call:
     inputs:
-      env_vars:
+      host:
+        description: 'Virtual Machine Host IP'
+        required: true
+      user:
+        description: 'Virtual Machine User'
+        required: true
+      key:
+        description: 'SSH Private Key to access the virtual machine'
         required: true
 
 jobs:
@@ -17,9 +24,9 @@ jobs:
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@v1.1.0
       with:
-        host: ${{ env.VM_HOST }}
-        username: ${{ env.VM_USER }}
-        key: ${{ env.SSH_PRIVATE_KEY }}
+        host: ${{ inputs.host }}
+        username: ${{ inputs.user }}
+        key: ${{ inputs.key }}
         script: |
           docker-compose -f /home/students/ingsis-infra/docker-compose.yml down
           docker-compose -f /home/students/ingsis-infra/docker-compose.yml up -d

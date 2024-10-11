@@ -22,25 +22,31 @@ jobs:
     name: continuous integration
     uses: ./.github/workflows/cont-int.yml
     with:
-      env_vars: ${{ toJson(env) }}
+      token: ${{ env.GITHUB_TOKEN }}
 
   continuous-deployment:
     name: continuous deployment
     needs: continuous-integration
     uses: ./.github/workflows/cont-dep.yml
     with:
-      env_vars: ${{ toJson(env) }}
+      token: ${{ env.GITHUB_TOKEN }}
+      actor: ${{ env.GITHUB_ACTOR }}
 
   continuous-delivery:
     name: continuous delivery
     needs: continuous-deployment
     uses: ./.github/workflows/cont-del.yml
     with:
-      env_vars: ${{ toJson(env) }}
+      registry: ${{ env.REGISTRY }}
+      image_name: ${{ env.IMAGE_NAME }}
+      actor: ${{ env.GITHUB_ACTOR }}
+      token: ${{ env.GITHUB_TOKEN }}
 
   update-virtual-machine:
     name: update virtual machine
     needs: continuous-delivery
     uses: ./.github/workflows/update-vm.yml
     with:
-      env_vars: ${{ toJson(env) }}
+      host: ${{ env.VM_HOST }}
+      user: ${{ env.VM_USER }}
+      key: ${{ env.SSH_PRIVATE_KEY }}

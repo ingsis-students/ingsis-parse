@@ -3,8 +3,11 @@ name: continuous integration
 on:
   workflow_call:
     inputs:
-      env_vars:
+      token:
+        description: 'Personal Access Token'
         required: true
+        default: ${{ secrets.GITHUB_TOKEN }}
+
 
 jobs:
   integration:
@@ -21,4 +24,6 @@ jobs:
             distribution: 'adopt'
 
       -   name: Run Build
+          env:
+            GITHUB_TOKEN: ${{ inputs.token }}
           run: ./gradlew build

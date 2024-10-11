@@ -3,8 +3,14 @@ name: continuous deployment
 on:
   workflow_call:
     inputs:
-      env_vars:
+      token:
+        description: 'Personal Access Token'
         required: true
+        default: ${{ secrets.GITHUB_TOKEN }}
+      actor:
+        description: 'GitHub Actor'
+        required: true
+        default: ${{ github.actor }}
 
 jobs:
   deployment:
@@ -15,14 +21,17 @@ jobs:
       packages: write
 
     steps:
-      -   name: Checkout
-          uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      -   name: Set up JDK
-          uses: actions/setup-java@v2
-          with:
-            java-version: 21
-            distribution: 'adopt'
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 21
+          distribution: 'adopt'
 
-      -   name: Publish package
-          run: ./gradlew publish --info
+      - name: Publish package
+        run: ./gradlew publish --info
+        env:
+          GITHUB_TOKEN: ${{ inputs.token }}
+          GITHUB_ACTOR: ${{ inputs.actor }}

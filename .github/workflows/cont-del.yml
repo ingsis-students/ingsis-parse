@@ -3,7 +3,18 @@ name: continuous delivery
 on:
   workflow_call:
     inputs:
-      env_vars:
+      registry:
+        description: 'Container registry where to publish the image'
+        required: true
+      image_name:
+        description: 'Image name for the Docker Image'
+        required: true
+      actor:
+        description: 'GitHub Actor'
+        required: true
+        default: ${{ github.actor }}
+      token:
+        description: 'Personal Access Token with sufficient rights to publish Docker image'
         required: true
 
 jobs:
@@ -28,9 +39,9 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@v2
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ env.GITHUB_ACTOR }}
-          password: ${{ env.GITHUB_TOKEN }}
+          registry: ${{ inputs.registry }}
+          username: ${{ inputs.actor }}
+          password: ${{ inputs.token }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
@@ -38,7 +49,7 @@ jobs:
           context: .
           file: ./Dockerfile.multi
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: ${{ inputs.registry }}/${{ inputs.image_name }}
           build-args: |
-              GITHUB_ACTOR=${{ env.GITHUB_ACTOR }}
-              GITHUB_TOKEN=${{ env.GITHUB_TOKEN }}
+              GITHUB_ACTOR=${{ inputs.actor }}
+              GITHUB_TOKEN=${{ inputs.token }}
