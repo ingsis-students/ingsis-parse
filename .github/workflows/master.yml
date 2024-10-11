@@ -30,6 +30,10 @@ jobs:
     name: continuous delivery
     needs: continuous-deployment
     uses: ./.github/workflows/cont-del.yml
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
     with:
       registry: ghcr.io
       image_name: ${{ github.ref_name == 'main' && 'tomasvalleduran/ingsis-parse' || 'tomasvalleduran/ingsis-parse-prod' }}
