@@ -12,7 +12,6 @@ on:
       actor:
         description: 'GitHub Actor'
         required: true
-        default: ${{ github.actor }}
     secrets:
       token:
         description: 'Personal Access Token with sufficient rights to publish Docker image'

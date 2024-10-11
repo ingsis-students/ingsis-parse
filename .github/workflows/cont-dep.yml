@@ -6,12 +6,10 @@ on:
       actor:
         description: 'GitHub Actor'
         required: true
-        default: ${{ github.actor }}
     secrets:
       token:
         description: 'Personal Access Token'
         required: true
-        default: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   deployment:
