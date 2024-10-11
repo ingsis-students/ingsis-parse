@@ -12,7 +12,7 @@ jobs:
     name: continuous integration
     uses: ./.github/workflows/cont-int.yml
     secrets:
-      token: ${{ secrets.PAT }}
+      token: ${{ secrets.GITHUB_TOKEN }}
 
   continuous-deployment:
     name: continuous deployment
@@ -24,7 +24,7 @@ jobs:
     with:
       actor: ${{ github.actor }}
     secrets:
-      token: ${{ secrets.PAT }}
+      token: ${{ secrets.GITHUB_TOKEN }}
 
   continuous-delivery:
     name: continuous delivery
