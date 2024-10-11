@@ -48,7 +48,5 @@ jobs:
     with:
       host: ${{ github.ref_name == 'main' && '20.70.208.179' || '20.213.8.120' }}
       user: ${{ github.ref_name == 'main' && 'students' || 'matichialva' }}
-      actor: ${{ github.actor }}
     secrets:
       key: ${{ secrets.SSH_PRIVATE_KEY }}
-      token: ${{ secrets.PAT }}
