@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: continuous integration
-        uses: ./.github/actions/cont-int.yml
+        uses: ./.github/workflows/cont-int.yml
         with:
           env_vars: ${{ toJson(env) }}
 
@@ -35,7 +35,7 @@ jobs:
 
     steps:
       - name: continuous deployment
-        uses: ./.github/actions/cont-dep.yml
+        uses: ./.github/workflows/cont-dep.yml
         with:
           env_vars: ${{ toJson(env) }}
 
@@ -46,7 +46,7 @@ jobs:
 
     steps:
       - name: continuous delivery
-        uses: ./.github/actions/cont-del.yml
+        uses: ./.github/workflows/cont-del.yml
         with:
           env_vars: ${{ toJson(env) }}
 
@@ -57,6 +57,6 @@ jobs:
 
     steps:
       - name: update vm
-        uses: ./.github/actions/update-vm.yml
+        uses: ./.github/workflows/update-vm.yml
         with:
           env_vars: ${{ toJson(env) }}
