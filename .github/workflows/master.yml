@@ -18,6 +18,9 @@ jobs:
     name: continuous deployment
     needs: continuous-integration
     uses: ./.github/workflows/cont-dep.yml
+    permissions:
+      contents: read
+      packages: write
     with:
       actor: ${{ github.actor }}
     secrets:
