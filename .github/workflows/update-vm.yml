@@ -11,9 +11,16 @@ on:
         description: 'Virtual Machine User'
         required: true
         type: string
+      actor:
+        description: 'GitHub Actor'
+        required: true
+        type: string
     secrets:
       key:
         description: 'SSH Private Key to access the virtual machine'
+        required: true
+      token:
+        description: 'Personal Access Token'
         required: true
 
 jobs:
@@ -31,5 +38,6 @@ jobs:
         username: ${{ inputs.user }}
         key: ${{ secrets.key }}
         script: |
-          docker-compose -f /home/students/ingsis-infra/docker-compose.yml down
-          docker-compose -f /home/students/ingsis-infra/docker-compose.yml up -d
+          echo ${{ secrets.token }} | docker login ghcr.io -u ${{ inputs.actor }} --password-stdin
+          docker compose -f /home/students/ingsis-infra/docker-compose.yml down
+          docker compose -f /home/students/ingsis-infra/docker-compose.yml up -d
