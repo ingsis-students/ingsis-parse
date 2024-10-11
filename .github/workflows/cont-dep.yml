@@ -3,14 +3,15 @@ name: continuous deployment
 on:
   workflow_call:
     inputs:
-      token:
-        description: 'Personal Access Token'
-        required: true
-        default: ${{ secrets.GITHUB_TOKEN }}
       actor:
         description: 'GitHub Actor'
         required: true
         default: ${{ github.actor }}
+    secrets:
+      token:
+        description: 'Personal Access Token'
+        required: true
+        default: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   deployment:

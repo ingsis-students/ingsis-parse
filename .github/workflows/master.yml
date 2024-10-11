@@ -7,46 +7,33 @@ on:
       - main
       - production
 
-env:
-  GITHUB_TOKEN: ${{ secrets.PAT }}
-  GITHUB_ACTOR: ${{ github.actor }}
-  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.ref_name == 'main' && 'tomasvalleduran/ingsis-parse' || 'tomasvalleduran/ingsis-parse-prod' }}
-  VM_HOST: ${{ github.ref_name == 'main' && '20.70.208.179' || '20.213.8.120' }}
-  VM_USER: ${{ github.ref_name == 'main' && 'students' || 'matichialva' }}
-
-
 jobs:
   continuous-integration:
     name: continuous integration
     uses: ./.github/workflows/cont-int.yml
-    with:
-      token: ${{ env.GITHUB_TOKEN }}
 
   continuous-deployment:
     name: continuous deployment
     needs: continuous-integration
     uses: ./.github/workflows/cont-dep.yml
-    with:
-      token: ${{ env.GITHUB_TOKEN }}
-      actor: ${{ env.GITHUB_ACTOR }}
 
   continuous-delivery:
     name: continuous delivery
     needs: continuous-deployment
     uses: ./.github/workflows/cont-del.yml
     with:
-      registry: ${{ env.REGISTRY }}
-      image_name: ${{ env.IMAGE_NAME }}
-      actor: ${{ env.GITHUB_ACTOR }}
-      token: ${{ env.GITHUB_TOKEN }}
+      registry: ghcr.io
+      image_name: ${{ github.ref_name == 'main' && 'tomasvalleduran/ingsis-parse' || 'tomasvalleduran/ingsis-parse-prod' }}
+      actor: ${{ github.actor }}
+    secrets:
+      token: ${{ secrets.PAT }}
 
   update-virtual-machine:
     name: update virtual machine
     needs: continuous-delivery
     uses: ./.github/workflows/update-vm.yml
     with:
-      host: ${{ env.VM_HOST }}
-      user: ${{ env.VM_USER }}
-      key: ${{ env.SSH_PRIVATE_KEY }}
+      host: ${{ github.ref_name == 'main' && '20.70.208.179' || '20.213.8.120' }}
+      user: ${{ github.ref_name == 'main' && 'students' || 'matichialva' }}
+    secrets:
+      key: ${{ secrets.SSH_PRIVATE_KEY }}

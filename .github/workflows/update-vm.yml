@@ -9,6 +9,7 @@ on:
       user:
         description: 'Virtual Machine User'
         required: true
+    secrets:
       key:
         description: 'SSH Private Key to access the virtual machine'
         required: true

@@ -2,7 +2,7 @@ name: continuous integration
 
 on:
   workflow_call:
-    inputs:
+    secrets:
       token:
         description: 'Personal Access Token'
         required: true
