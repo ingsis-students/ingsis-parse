@@ -1,5 +1,5 @@
 FROM gradle:8-jdk21 AS build
-LABEL org.opencontainers.image.source="https://github.com/TomasValleDuran/ingsis-parse"
+LABEL org.opencontainers.image.source="https://github.com/ingsis-students/ingsis-parse"
 
 ARG GITHUB_ACTOR
 ARG GITHUB_TOKEN
