@@ -99,7 +99,8 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/ingsis-students/ingsis-parse")
+            def packageName = project.findProperty('package') ?: System.getenv('PACKAGE_NAME') ?: project.name
+            url = uri("https://maven.pkg.github.com/ingsis-students/" + packageName)
             credentials {
                 username = project.findProperty("github.user") ?: System.getenv("GITHUB_ACTOR")
                 password = project.findProperty("github.token") ?: System.getenv("GITHUB_TOKEN")
