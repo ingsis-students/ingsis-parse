@@ -1,0 +1,53 @@
+name: Master Workflow
+run-name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - main
+      - production
+
+jobs:
+  continuous-integration:
+    name: continuous integration
+    uses: ./.github/workflows/cont-int.yml
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+
+  continuous-deployment:
+    name: continuous deployment
+    needs: continuous-integration
+    uses: ./.github/workflows/cont-dep.yml
+    permissions:
+      contents: read
+      packages: write
+    with:
+      actor: ${{ github.actor }}
+      package_name: ${{ github.ref_name == 'main' && 'ingsis-parse' || 'ingsis-parse-prod' }}
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+
+  continuous-delivery:
+    name: continuous delivery
+    needs: continuous-deployment
+    uses: ./.github/workflows/cont-del.yml
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    with:
+      registry: ghcr.io
+      image_name: ${{ github.ref_name == 'main' && 'ingsis-students/ingsis-parse' || 'ingsis-students/ingsis-parse-prod' }}
+      actor: ${{ github.actor }}
+    secrets:
+      token: ${{ secrets.PAT }}
+
+  update-virtual-machine:
+    name: update virtual machine
+    needs: continuous-delivery
+    uses: ./.github/workflows/update-vm.yml
+    with:
+      host: ${{ github.ref_name == 'main' && '20.70.208.179' || '20.213.8.120' }}
+      user: ${{ github.ref_name == 'main' && 'students' || 'matichialva' }}
+    secrets:
+      key: ${{ secrets.SSH_PRIVATE_KEY }}

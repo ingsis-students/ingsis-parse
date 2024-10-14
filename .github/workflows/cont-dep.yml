@@ -1,33 +1,42 @@
 name: continuous deployment
 
 on:
-  workflow_run:
-    workflows: [ "continuous integration" ] # name del workflow q va primero.
-    types:
-      - completed
+  workflow_call:
+    inputs:
+      actor:
+        description: 'GitHub Actor'
+        required: true
+        type: string
+      package_name:
+        description: 'Package name to publish'
+        required: true
+        type: string
+    secrets:
+      token:
+        description: 'Personal Access Token'
+        required: true
 
 jobs:
   deployment:
-    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    name: Continuous Deployment
 
     permissions:
       contents: read
       packages: write
 
     steps:
-      -   name: Checkout
-          uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      -   name: Set up JDK
-          uses: actions/setup-java@v2
-          with:
-            java-version: 21
-            distribution: 'adopt'
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 21
+          distribution: 'adopt'
 
-      -   name: Publish package
-          run: ./gradlew publish --info
-          env:
-            GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish package
+        run: ./gradlew publish --info
+        env:
+          GITHUB_TOKEN: ${{ secrets.token }}
+          GITHUB_ACTOR: ${{ inputs.actor }}
+          PACKAGE_NAME: ${{ inputs.package_name }}

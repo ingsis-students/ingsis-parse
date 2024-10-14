@@ -1,22 +1,28 @@
 name: continuous delivery
 
 on:
-  workflow_run:
-    workflows: [ "continuous deployment" ]
-    types:
-      - completed
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: tomasvalleduran/ingsis-parse
-  GITHUB_ACTOR: ${{ github.actor }}
-  GITHUB_TOKEN: ${{ secrets.PAT }}
+  workflow_call:
+    inputs:
+      registry:
+        description: 'Container registry where to publish the image'
+        required: true
+        type: string
+      image_name:
+        description: 'Image name for the Docker Image'
+        required: true
+        type: string
+      actor:
+        description: 'GitHub Actor'
+        required: true
+        type: string
+    secrets:
+      token:
+        description: 'Personal Access Token with sufficient rights to publish Docker image'
+        required: true
 
 jobs:
   delivery:
-    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    name: Continuous Delivery
 
     permissions:
       contents: read
@@ -36,9 +42,9 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@v2
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ env.GITHUB_ACTOR }}
-          password: ${{ env.GITHUB_TOKEN }}
+          registry: ${{ inputs.registry }}
+          username: ${{ inputs.actor }}
+          password: ${{ secrets.token }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
@@ -46,7 +52,7 @@ jobs:
           context: .
           file: ./Dockerfile.multi
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: ${{ inputs.registry }}/${{ inputs.image_name }}
           build-args: |
-              GITHUB_USER=${{ env.GITHUB_ACTOR }}
-              GITHUB_TOKEN=${{ env.GITHUB_TOKEN }}
+              GITHUB_ACTOR=${{ inputs.actor }}
+              GITHUB_TOKEN=${{ secrets.token }}
