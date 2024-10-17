@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.jwt.JwtDecoder
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -23,6 +24,7 @@ import java.io.File
 import java.util.stream.Stream
 
 @WebMvcTest(LinterController::class)
+@ActiveProfiles("test")
 internal class WebMockLinterTest {
 
     @Autowired
