@@ -23,7 +23,8 @@ jobs:
       packages: write
     with:
       actor: ${{ github.actor }}
-      package_name: ${{ github.ref_name == 'main' && 'ingsis-parse' || 'ingsis-parse-prod' }}
+      # package_name: ${{ github.ref_name == 'main' && 'ingsis-parse' || 'ingsis-parse-prod' }}
+      package_name: 'ingsis-parse'
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
 
