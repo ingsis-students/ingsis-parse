@@ -20,7 +20,9 @@ server:
   port: 8081
 
 stream:
-  key: "lintRuleStream" #used by producers
+  lint.key: "lintRuleStream" #used by producers
+  format.key: "formatRuleStream" #used by producers
 
 groups:
   lint: "lintGroup" #used by consumers
+  format: "formatGroup"

@@ -12,7 +12,7 @@ interface LinterRuleProducer {
 }
 @Service
 class RedisLinterRuleProducer @Autowired constructor(
-    @Value("\${stream.key}") streamKey: String,
+    @Value("\${stream.lint.key}") streamKey: String,
     redis: ReactiveRedisTemplate<String, String>
 ) : LinterRuleProducer, RedisStreamProducer(streamKey, redis) {
     override suspend fun publishEvent(name: String) {
