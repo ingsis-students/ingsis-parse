@@ -12,6 +12,6 @@ class ConnectionFactory(@Value("\${spring.data.redis.host}") private val hostNam
                         @Value("\${spring.data.redis.port}") private val port: Int) {
     @Bean // method called when app starts and added to spring app context. (able to be used anywhere)
     fun redisConnectionFactory(): LettuceConnectionFactory {
-        return LettuceConnectionFactory(RedisStandaloneConfiguration())
+        return LettuceConnectionFactory(RedisStandaloneConfiguration(hostName, port))
     }
 }
