@@ -60,6 +60,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.security:spring-security-oauth2-jose' // JWT decoding and validation
     testImplementation 'org.springframework.security:spring-security-test'
+
+    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive") // reactive access to redis stream
+    implementation("org.springframework.boot:spring-boot-starter-webflux") // reactive webapp, requests simultaneously.
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions") //ktlin extensions for reactive programming.
 }
 
 kotlin {
