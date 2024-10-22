@@ -73,7 +73,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive") // reactive access to redis stream
     implementation("org.springframework.boot:spring-boot-starter-webflux") // reactive webapp, requests simultaneously.
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions") //ktlin extensions for reactive programming.
-    implementation 'org.austral.ingsis:redis-streams:0.1.x'
+    implementation 'org.austral.ingsis:redis-streams-flux:0.1.13'
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 }
 
