@@ -33,8 +33,8 @@ class LinterRuleConsumer @Autowired constructor(
     }
 
     override fun onMessage(record: ObjectRecord<String, SnippetMessage>) {
-        // Process the linting rule asynchronously
-        println("Processing linting rule: ${record.value}")
-        lintService.analyze("1.1", record.value.content, record.value.rules)
+        val lintRules = "look for rules in assetService";"1"
+        val content = "look for content in assetService"
+        //lintService.analyze("1.1", content, lintRules)
     }
 }
