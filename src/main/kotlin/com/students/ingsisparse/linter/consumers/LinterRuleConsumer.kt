@@ -1,5 +1,6 @@
 package com.students.ingsisparse.linter.consumers
 
+import com.students.ingsisparse.config.SnippetMessage
 import com.students.ingsisparse.linter.LintDto
 import org.austral.ingsis.redis.RedisStreamConsumer
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,10 +18,10 @@ class LintRuleConsumer @Autowired constructor(
     redisTemplate: ReactiveRedisTemplate<String, String>,
     @Value("\${stream.lint.key}") streamKey: String,
     @Value("\${groups.lint}") groupId: String
-) : RedisStreamConsumer<LintDto>(streamKey, groupId, redisTemplate) {
+) : RedisStreamConsumer<SnippetMessage>(streamKey, groupId, redisTemplate) {
 
 
-    override fun options(): StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, LintDto>> {
+    override fun options(): StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, SnippetMessage>> {
         /**
          * how the consumer behaves
          * pollTimeout: time until checks for new messages
@@ -28,11 +29,11 @@ class LintRuleConsumer @Autowired constructor(
          */
         return StreamReceiver.StreamReceiverOptions.builder()
             .pollTimeout(Duration.ofMillis(10000))
-            .targetType(LintDto::class.java)
+            .targetType(SnippetMessage::class.java)
             .build()
     }
 
-    override fun onMessage(record: ObjectRecord<String, LintDto>) {
+    override fun onMessage(record: ObjectRecord<String, SnippetMessage>) {
         // Process the linting rule asynchronously
         println("Processing linting rule: ${record.value}")
         // Add logic to apply the new rule to snippets
