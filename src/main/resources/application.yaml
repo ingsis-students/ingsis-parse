@@ -11,3 +11,18 @@ spring:
               issuer-uri: ${AUTH_SERVER_URI}
               client-id: ${AUTH_CLIENT_ID}
               client-secret: ${AUTH_CLIENT_SECRET}
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+server:
+  port: 8081
+
+stream:
+  lint.key: "lintRuleStream" #used by producers
+  format.key: "formatRuleStream" #used by producers
+
+groups:
+  lint: "lintGroup" #used by consumers
+  format: "formatGroup"

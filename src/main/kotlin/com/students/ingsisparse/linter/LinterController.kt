@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/printscript")
 class LinterController(private val linterService: LinterService) {
-
     @PostMapping("/analyze")
     fun analyzeCode(@RequestBody lintDto: LintDto): List<String> {
         val version = lintDto.version

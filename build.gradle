@@ -17,6 +17,8 @@ java {
     }
 }
 
+
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -29,6 +31,15 @@ repositories {
     maven {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/santosbogo/printscript")
+        credentials {
+            username = project.findProperty("github.user") ?: System.getenv("GITHUB_ACTOR")
+            password = project.findProperty("github.token") ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
+
+    maven {
+        name = "GitHubPackagesAustral"
+        url = uri("https://maven.pkg.github.com/austral-ingsis/class-redis-streams")
         credentials {
             username = project.findProperty("github.user") ?: System.getenv("GITHUB_ACTOR")
             password = project.findProperty("github.token") ?: System.getenv("GITHUB_TOKEN")
@@ -60,6 +71,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.security:spring-security-oauth2-jose' // JWT decoding and validation
     testImplementation 'org.springframework.security:spring-security-test'
+
+    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive") // reactive access to redis stream
+    implementation("org.springframework.boot:spring-boot-starter-webflux") // reactive webapp, requests simultaneously.
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions") //ktlin extensions for reactive programming.
+    implementation 'org.austral.ingsis:redis-streams-flux:0.1.13'
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
 }
 
 kotlin {
@@ -84,6 +102,7 @@ kover {
 }
 
 ktlint{
+
 }
 
 tasks.named('build') {
