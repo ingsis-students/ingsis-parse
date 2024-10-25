@@ -6,11 +6,11 @@ import org.austral.ingsis.redis.RedisStreamConsumer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
+import org.springframework.data.redis.connection.stream.ObjectRecord
 import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.data.redis.stream.StreamReceiver
 import org.springframework.stereotype.Service
 import java.time.Duration
-import org.springframework.data.redis.connection.stream.ObjectRecord
 
 @Service
 @Profile("!test")
@@ -35,6 +35,6 @@ class LinterRuleConsumer @Autowired constructor(
     override fun onMessage(record: ObjectRecord<String, SnippetMessage>) {
         // Process the linting rule asynchronously
         println("Processing linting rule: ${record.value}")
-        lintService.analyze("1.1", record.value.content, record.value.rules)
+        // lintService.analyze("1.1", record.value.content, record.value.rules)
     }
 }
