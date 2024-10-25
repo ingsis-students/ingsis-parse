@@ -1,4 +1,4 @@
-FROM gradle:8-jdk21 AS build
+FROM --platform=linux/amd64 gradle:8-jdk21 AS build
 LABEL org.opencontainers.image.source="https://github.com/ingsis-students/ingsis-parse"
 
 ARG GITHUB_ACTOR
@@ -10,7 +10,7 @@ COPY . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle assemble
 
-FROM openjdk:21-slim
+FROM --platform=linux/amd64 openjdk:21-slim
 EXPOSE 8081
 RUN mkdir /app
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/spring-boot-application.jar
