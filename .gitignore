@@ -42,3 +42,4 @@ out/
 ### Gradle ###
 gradle.properties
 .env
+/src/main/resources/application.properties
