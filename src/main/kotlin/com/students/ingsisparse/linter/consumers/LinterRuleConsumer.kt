@@ -33,7 +33,7 @@ class LinterRuleConsumer @Autowired constructor(
     }
 
     override fun onMessage(record: ObjectRecord<String, SnippetMessage>) {
-        val lintRules = "look for rules in assetService";"1"
+        val lintRules = "look for rules in assetService"
         val content = "look for content in assetService"
         //lintService.analyze("1.1", content, lintRules)
     }
