@@ -1,7 +1,12 @@
 package com.students.ingsisparse.linter.consumers
 
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.students.ingsisparse.asset.AssetService
 import com.students.ingsisparse.config.SnippetMessage
 import com.students.ingsisparse.linter.LinterService
+import com.students.ingsisparse.types.Rule
+import kotlinx.serialization.json.JsonObject
 import org.austral.ingsis.redis.RedisStreamConsumer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -18,7 +23,8 @@ class LinterRuleConsumer @Autowired constructor(
     redisTemplate: ReactiveRedisTemplate<String, String>,
     @Value("\${stream.lint.key}") streamKey: String,
     @Value("\${groups.lint}") groupId: String,
-    private val lintService: LinterService
+    private val lintService: LinterService,
+    private val assetService: AssetService
 ) : RedisStreamConsumer<SnippetMessage>(streamKey, groupId, redisTemplate) {
     override fun options(): StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, SnippetMessage>> {
         /**
@@ -33,8 +39,16 @@ class LinterRuleConsumer @Autowired constructor(
     }
 
     override fun onMessage(record: ObjectRecord<String, SnippetMessage>) {
-        val lintRules = "look for rules in assetService"
-        val content = "look for content in assetService"
-        //lintService.analyze("1.1", content, lintRules)
+        val message = record.value
+        val lintRules: JsonObject = getRulesAsJsonObject(message)
+        val content = assetService.get("snippets", message.snippetId)
+        lintService.analyze("1.1", content, lintRules)
+    }
+
+    private fun getRulesAsJsonObject(message: SnippetMessage): JsonObject {
+        val lintRulesJson = assetService.get("lint-rules", message.userId)
+        val objectMapper = ObjectMapper()
+        val lintRules: List<Rule> = objectMapper.readValue(lintRulesJson, object : TypeReference<List<Rule>>() {})
+        return lintService.convertActiveRulesToJsonObject(lintRules)
     }
 }
