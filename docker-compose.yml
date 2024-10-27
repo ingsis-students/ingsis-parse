@@ -1,6 +1,10 @@
 version: '3'
 
 services:
+  redis: # when running individually, redis container instance needed.
+    image: redis:latest
+    ports:
+      - '6379:6379'
   api:
     build:
       context: .
@@ -12,3 +16,7 @@ services:
       AUTH_SERVER_URI: ${AUTH_SERVER_URI}
       AUTH_CLIENT_ID: ${AUTH_CLIENT_ID}
       AUTH_CLIENT_SECRET: ${AUTH_CLIENT_SECRET}
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+    depends_on:
+        - redis
