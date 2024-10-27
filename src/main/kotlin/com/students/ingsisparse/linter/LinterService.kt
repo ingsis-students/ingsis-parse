@@ -20,7 +20,7 @@ class LinterService {
 
     fun convertActiveRulesToJsonObject(rules: List<Rule>): JsonObject {
         /**
-        * Convert active rules to a map of rule name to rule value
+         * Convert active rules to a map of rule name to rule value
          **/
         val objectMapper = ObjectMapper()
 

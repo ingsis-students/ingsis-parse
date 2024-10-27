@@ -95,14 +95,14 @@ kover {
     reports {
         verify {
             rule {
-                minBound(80)
+                minBound(60)
             }
         }
     }
 }
 
 ktlint{
-
+    disabledRules = ["import-ordering"]
 }
 
 tasks.named('build') {

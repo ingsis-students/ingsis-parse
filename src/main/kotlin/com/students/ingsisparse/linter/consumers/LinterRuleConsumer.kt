@@ -6,16 +6,16 @@ import com.students.ingsisparse.asset.AssetService
 import com.students.ingsisparse.config.SnippetMessage
 import com.students.ingsisparse.linter.LinterService
 import com.students.ingsisparse.types.Rule
+import java.time.Duration
 import kotlinx.serialization.json.JsonObject
 import org.austral.ingsis.redis.RedisStreamConsumer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
+import org.springframework.data.redis.connection.stream.ObjectRecord
 import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.data.redis.stream.StreamReceiver
 import org.springframework.stereotype.Service
-import java.time.Duration
-import org.springframework.data.redis.connection.stream.ObjectRecord
 
 @Service
 @Profile("!test")
