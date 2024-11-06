@@ -43,7 +43,9 @@ class LinterRuleConsumer @Autowired constructor(
         println("starting liniting asyncronically")
         val message: SnippetMessage = jacksonObjectMapper().readValue(record.value, SnippetMessage::class.java)
         val lintRules: JsonObject = getRulesAsJsonObject(message)
+        println("lintRules $lintRules")
         val content = assetService.get("snippets", message.snippetId)
+        println("content of snippet $content")
         lintService.analyze("1.1", content, lintRules)
         println("Successfully linted: ${record.id}")
     }
