@@ -28,21 +28,10 @@ class OAuth2ResourceServerSecurityConfiguration(
 ) {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        http.authorizeHttpRequests {
-            it
-                .requestMatchers("/").permitAll()
-                /*
-                .requestMatchers(POST, "/api/printscript/interpret").hasAuthority("SCOPE_read:snippets")
-                .requestMatchers(POST, "/api/printscript/test").hasAuthority("SCOPE_read:snippets")
-                .requestMatchers(POST, "/api/printscript/validate").hasAuthority("SCOPE_read:snippets")
-                .requestMatchers(POST, "/api/printscript/format").hasAuthority("SCOPE_write:snippets")
-                .requestMatchers(POST, "/api/printscript/analyze").hasAuthority("SCOPE_write:snippets")
-                 */
-                .anyRequest().authenticated()
-        }
-            .oauth2ResourceServer { it.jwt(withDefaults()) }
-            .cors { it.disable() }
-            .csrf { it.disable() }
+        http.authorizeHttpRequests { authz -> authz.anyRequest().authenticated() }
+            .oauth2ResourceServer { oauth2 -> oauth2.jwt(withDefaults()) }
+            .cors(withDefaults())
+            .csrf { csrf -> csrf.disable() }
         return http.build()
     }
 
