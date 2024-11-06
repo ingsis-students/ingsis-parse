@@ -2,6 +2,7 @@ package com.students.ingsisparse.linter.consumers
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.students.ingsisparse.asset.AssetService
 import com.students.ingsisparse.config.SnippetMessage
 import com.students.ingsisparse.linter.LinterService
@@ -25,8 +26,8 @@ class LinterRuleConsumer @Autowired constructor(
     @Value("\${groups.lint}") groupId: String,
     private val lintService: LinterService,
     private val assetService: AssetService
-) : RedisStreamConsumer<SnippetMessage>(streamKey, groupId, redisTemplate) {
-    override fun options(): StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, SnippetMessage>> {
+) : RedisStreamConsumer<String>(streamKey, groupId, redisTemplate) {
+    override fun options(): StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, String>> {
         /**
          * how the consumer behaves
          * pollTimeout: time until checks for new messages
@@ -34,21 +35,28 @@ class LinterRuleConsumer @Autowired constructor(
          */
         return StreamReceiver.StreamReceiverOptions.builder()
             .pollTimeout(Duration.ofMillis(10000))
-            .targetType(SnippetMessage::class.java)
+            .targetType(String::class.java)
             .build()
     }
 
-    override fun onMessage(record: ObjectRecord<String, SnippetMessage>) {
-        val message = record.value
+    override fun onMessage(record: ObjectRecord<String, String>) {
+        println("starting liniting asyncronically")
+        val message: SnippetMessage = jacksonObjectMapper().readValue(record.value, SnippetMessage::class.java)
         val lintRules: JsonObject = getRulesAsJsonObject(message)
         val content = assetService.get("snippets", message.snippetId)
         lintService.analyze("1.1", content, lintRules)
+        println("Successfully linted: ${record.id}")
     }
 
     private fun getRulesAsJsonObject(message: SnippetMessage): JsonObject {
-        val lintRulesJson = assetService.get("lint-rules", message.userId)
-        val objectMapper = ObjectMapper()
-        val lintRules: List<Rule> = objectMapper.readValue(lintRulesJson, object : TypeReference<List<Rule>>() {})
-        return lintService.convertActiveRulesToJsonObject(lintRules)
+        return try {
+            val lintRulesJson = assetService.get("lint-rules", message.userId)
+            val objectMapper = ObjectMapper()
+            val lintRules: List<Rule> = objectMapper.readValue(lintRulesJson, object : TypeReference<List<Rule>>() {})
+            lintService.convertActiveRulesToJsonObject(lintRules)
+        } catch (e: Exception) {
+            println("Error deserializing lint rules: ${e.message}")
+            JsonObject(emptyMap())
+        }
     }
 }
