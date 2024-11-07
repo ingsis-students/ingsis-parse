@@ -14,6 +14,7 @@ class LinterService {
         val reader = StringReader(code)
         val runner = Runner(version, reader)
 
+        println("In linter service with RULES: $rules")
         val result = runner.analyze(rules)
         return result.warningsList
     }
