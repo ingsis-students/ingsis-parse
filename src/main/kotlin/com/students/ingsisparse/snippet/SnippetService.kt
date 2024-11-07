@@ -10,15 +10,16 @@ import org.springframework.web.client.RestTemplate
 
 @Service
 class SnippetService(private val restTemplate: RestTemplate) {
-    fun updateStatus(id: Long, status: Compliance) {
+    fun updateStatus(jwtToken: String, id: Long, status: Compliance) {
         val headers = HttpHeaders().apply {
             contentType = MediaType.APPLICATION_JSON
+            set("Authorization", jwtToken)
         }
         val entity = HttpEntity(status, headers)
 
         restTemplate.exchange(
             "http://snippet-api:8080/api/snippets/$id/status",
-            HttpMethod.PATCH,
+            HttpMethod.PUT,
             entity,
             Void::class.java
         )
