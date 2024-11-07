@@ -64,4 +64,4 @@ jobs:
               GITHUB_ACTOR=${{ inputs.actor }}
               GITHUB_TOKEN=${{ secrets.token }}
               NEW_RELIC_LICENSE_KEY=${{ secrets.new_relic_license_key }}
-              NEW_RELIC_APP_NAME=${{  }}
+              NEW_RELIC_APP_NAME=${{ inputs.new_relic_app_name }}
