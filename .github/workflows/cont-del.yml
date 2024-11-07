@@ -15,9 +15,16 @@ on:
         description: 'GitHub Actor'
         required: true
         type: string
+      new_relic_app_name:
+        description: 'New Relic App Name'
+        required: true
+        type: string
     secrets:
       token:
         description: 'Personal Access Token with sufficient rights to publish Docker image'
+        required: true
+      new_relic_license_key:
+        description: 'License key for monitoring'
         required: true
 
 jobs:
@@ -56,3 +63,5 @@ jobs:
           build-args: |
               GITHUB_ACTOR=${{ inputs.actor }}
               GITHUB_TOKEN=${{ secrets.token }}
+              NEW_RELIC_LICENSE_KEY=${{ secrets.new_relic_license_key }}
+              NEW_RELIC_APP_NAME=${{  }}
