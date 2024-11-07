@@ -5,6 +5,8 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.students.ingsisparse.asset.AssetService
 import com.students.ingsisparse.config.SnippetMessage
 import com.students.ingsisparse.linter.LinterService
+import com.students.ingsisparse.snippet.SnippetService
+import com.students.ingsisparse.types.Compliance
 import com.students.ingsisparse.types.Rule
 import java.time.Duration
 import kotlinx.serialization.json.JsonObject
@@ -24,7 +26,8 @@ class LinterRuleConsumer @Autowired constructor(
     @Value("\${stream.lint.key}") streamKey: String,
     @Value("\${groups.lint}") groupId: String,
     private val lintService: LinterService,
-    private val assetService: AssetService
+    private val assetService: AssetService,
+    private val snippetService: SnippetService,
 ) : RedisStreamConsumer<String>(streamKey, groupId, redisTemplate) {
     override fun options(): StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, String>> {
         /**
@@ -39,17 +42,21 @@ class LinterRuleConsumer @Autowired constructor(
     }
 
     override fun onMessage(record: ObjectRecord<String, String>) {
+        println("starting liniting asyncronically")
+        val message: SnippetMessage = jacksonObjectMapper().readValue(record.value, SnippetMessage::class.java)
         try {
-            println("starting liniting asyncronically")
-            val message: SnippetMessage = jacksonObjectMapper().readValue(record.value, SnippetMessage::class.java)
             val lintRules: JsonObject = getRulesAsJsonObject(message)
             println("lintRules $lintRules")
             val content = assetService.get("snippets", message.snippetId)
             println("content of snippet $content")
-            lintService.analyze("1.1", content, lintRules)
+            val warnings = lintService.analyze("1.1", content, lintRules)
+            val success = warnings.isEmpty()
+            snippetService.updateStatus(message.snippetId, if (success) Compliance.SUCCESS else Compliance.FAILED)
+
             println("Successfully linted: ${record.id}")
         } catch (e: Exception) {
             println("Error linting: ${e.message}")
+            snippetService.updateStatus(message.snippetId, Compliance.FAILED)
         }
     }
 
