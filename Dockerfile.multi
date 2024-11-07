@@ -27,8 +27,8 @@ ENV NEW_RELIC_LICENSE_KEY=$NEW_RELIC_LICENSE_KEY
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/spring-boot-application.jar
 
 RUN mkdir -p /usr/local/newrelic
-COPY ./newrelic/newrelic.jar /usr/local/newrelic/newrelic.jar
-COPY ./newrelic/newrelic.yml /usr/local/newrelic/newrelic.yml
+ADD ./newrelic/newrelic.jar /usr/local/newrelic/newrelic.jar
+ADD ./newrelic/newrelic.yml /usr/local/newrelic/newrelic.yml
 
 # Run the application with New Relic
 ENTRYPOINT ["java", "-javaagent:/usr/local/newrelic/newrelic.jar", "-jar", "-Dspring.profiles.active=production", "/app/spring-boot-application.jar"]
