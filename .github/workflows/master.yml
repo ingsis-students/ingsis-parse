@@ -40,10 +40,8 @@ jobs:
       registry: ghcr.io
       image_name: ${{ github.ref_name == 'main' && 'ingsis-students/ingsis-parse' || 'ingsis-students/ingsis-parse-prod' }}
       actor: ${{ github.actor }}
-      new_relic_app_name: 'printscript-api'
     secrets:
       token: ${{ secrets.PAT }}
-      new_relic_license_key: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
 
   update-virtual-machine:
     name: update virtual machine

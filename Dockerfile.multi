@@ -1,4 +1,3 @@
-# Stage 1: Build the application
 FROM --platform=linux/amd64 gradle:8-jdk21 AS build
 LABEL org.opencontainers.image.source="https://github.com/ingsis-students/ingsis-parse"
 
@@ -7,28 +6,15 @@ ARG GITHUB_TOKEN
 ENV GITHUB_ACTOR=$GITHUB_USER
 ENV GITHUB_TOKEN=$GITHUB_TOKEN
 
-# Set the New Relic application name (optional, you can also pass this as an argument)
-ARG NEW_RELIC_APP_NAME=$NEW_RELIC_APP_NAME
-ENV NEW_RELIC_APP_NAME=$NEW_RELIC_APP_NAME
-
 COPY . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle assemble
 
-# Stage 2: Set up the application with New Relic
 FROM --platform=linux/amd64 openjdk:21-slim
 EXPOSE 8081
-
-# Define New Relic license key as an argument
-ARG NEW_RELIC_LICENSE_KEY
-ENV NEW_RELIC_LICENSE_KEY=$NEW_RELIC_LICENSE_KEY
-
-# Copy the compiled application jar
+RUN mkdir /app
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/spring-boot-application.jar
 
-RUN mkdir -p /usr/local/newrelic
-ADD ./newrelic/newrelic.jar /usr/local/newrelic/newrelic.jar
-ADD ./newrelic/newrelic.yml /usr/local/newrelic/newrelic.yml
+COPY ./newrelic-agent/newrelic.jar /app/newrelic.jar
 
-# Run the application with New Relic
-ENTRYPOINT ["java", "-javaagent:/usr/local/newrelic/newrelic.jar", "-jar", "-Dspring.profiles.active=production", "/app/spring-boot-application.jar"]
+ENTRYPOINT ["java", "-javaagent:/app/newrelic.jar", "-jar", "-Dspring.profiles.active=production", "/app/spring-boot-application.jar"]
