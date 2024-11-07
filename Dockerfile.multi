@@ -8,7 +8,7 @@ ENV GITHUB_ACTOR=$GITHUB_USER
 ENV GITHUB_TOKEN=$GITHUB_TOKEN
 
 # Set the New Relic application name (optional, you can also pass this as an argument)
-ARG NEW_RELIC_APP_NAME="snippet-api"
+ARG NEW_RELIC_APP_NAME=$NEW_RELIC_APP_NAME
 ENV NEW_RELIC_APP_NAME=$NEW_RELIC_APP_NAME
 
 COPY . /home/gradle/src
