@@ -51,12 +51,12 @@ class LinterRuleConsumer @Autowired constructor(
             println("content of snippet $content")
             val warnings = lintService.analyze("1.1", content, lintRules)
             val success = warnings.isEmpty()
-            snippetService.updateStatus(message.snippetId, if (success) Compliance.SUCCESS else Compliance.FAILED)
+            snippetService.updateStatus(message.jwtToken, message.snippetId, if (success) Compliance.SUCCESS else Compliance.FAILED)
 
             println("Successfully linted: ${record.id}")
         } catch (e: Exception) {
             println("Error linting: ${e.message}")
-            snippetService.updateStatus(message.snippetId, Compliance.FAILED)
+            snippetService.updateStatus(message.jwtToken, message.snippetId, Compliance.FAILED)
         }
     }
 
