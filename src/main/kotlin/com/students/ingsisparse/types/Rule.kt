@@ -1,8 +1,10 @@
 package com.students.ingsisparse.types
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 data class Rule(
-    val id: String = "",
-    val name: String = "",
-    val isActive: Boolean = false,
-    val value: Any? = null
+    @JsonProperty("id") val id: String = "",
+    @JsonProperty("name") val name: String = "",
+    @JsonProperty("isActive") val isActive: Boolean = false,
+    @JsonProperty("value") val value: Any? = null
 )
