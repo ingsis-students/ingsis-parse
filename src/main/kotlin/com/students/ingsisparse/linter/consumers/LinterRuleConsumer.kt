@@ -1,7 +1,6 @@
 package com.students.ingsisparse.linter.consumers
 
 import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.students.ingsisparse.asset.AssetService
 import com.students.ingsisparse.config.SnippetMessage
@@ -59,7 +58,7 @@ class LinterRuleConsumer @Autowired constructor(
             println("getting rules from asset service")
             val lintRulesJson = assetService.get("lint-rules", message.userId)
             println("rules gotten at consumer: $lintRulesJson")
-            val objectMapper = ObjectMapper()
+            val objectMapper = jacksonObjectMapper()
             val lintRules: List<Rule> = objectMapper.readValue(lintRulesJson, object : TypeReference<List<Rule>>() {})
             lintService.convertActiveRulesToJsonObject(lintRules)
         } catch (e: Exception) {
