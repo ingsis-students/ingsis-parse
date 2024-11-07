@@ -58,6 +58,7 @@ class LinterRuleConsumer @Autowired constructor(
         return try {
             println("getting rules from asset service")
             val lintRulesJson = assetService.get("lint-rules", message.userId)
+            println("rules gotten at consumer: $lintRulesJson")
             val objectMapper = ObjectMapper()
             val lintRules: List<Rule> = objectMapper.readValue(lintRulesJson, object : TypeReference<List<Rule>>() {})
             lintService.convertActiveRulesToJsonObject(lintRules)
