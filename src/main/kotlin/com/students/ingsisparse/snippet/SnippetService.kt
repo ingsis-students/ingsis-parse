@@ -18,7 +18,7 @@ class SnippetService(private val restTemplate: RestTemplate) {
 
         restTemplate.exchange(
             "http://snippet-api:8080/api/snippets/$id/status",
-            HttpMethod.PATCH,
+            HttpMethod.PUT,
             entity,
             Void::class.java
         )
