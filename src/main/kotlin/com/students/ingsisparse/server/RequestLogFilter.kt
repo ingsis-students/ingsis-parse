@@ -39,7 +39,7 @@ class RequestLogFilter : Filter {
                 val correlationId = MDC.get(CorrelationIdFilter.CORRELATION_ID_KEY) ?: "none"
 
                 // Include correlation ID in the log
-                logger.info("{} - {} [correlation-id={}] ", prefix, statusCode, correlationId)
+                logger.info("[id: {}] {} - {}", correlationId, prefix, statusCode)
             }
         } else {
             chain.doFilter(request, response)
