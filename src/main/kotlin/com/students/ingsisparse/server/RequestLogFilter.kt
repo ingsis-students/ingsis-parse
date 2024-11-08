@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
 import org.slf4j.Logger
+import org.slf4j.MDC
 import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 import java.io.IOException
@@ -33,7 +34,12 @@ class RequestLogFilter : Filter {
                 chain.doFilter(request, response)
             } finally {
                 val statusCode = response.status
-                logger.info("{} - {}", prefix, statusCode)
+
+                // Retrieve the correlation ID from MDC and log it
+                val correlationId = MDC.get(CorrelationIdFilter.CORRELATION_ID_KEY) ?: "none"
+
+                // Include correlation ID in the log
+                logger.info("{} - {} [correlation-id={}] ", prefix, statusCode, correlationId)
             }
         } else {
             chain.doFilter(request, response)
