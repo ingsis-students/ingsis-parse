@@ -1,15 +1,13 @@
-package com.students.ingsisparse.linter.consumers
+package com.students.ingsisparse.config.consumers
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.students.ingsisparse.asset.AssetService
 import com.students.ingsisparse.config.SnippetMessage
-import com.students.ingsisparse.linter.LinterService
+import com.students.ingsisparse.formatter.FormatterService
 import com.students.ingsisparse.snippet.SnippetService
-import com.students.ingsisparse.types.Compliance
 import com.students.ingsisparse.types.Rule
 import java.time.Duration
-import kotlinx.serialization.json.JsonObject
 import org.austral.ingsis.redis.RedisStreamConsumer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -21,11 +19,11 @@ import org.springframework.stereotype.Service
 
 @Service
 @Profile("!test")
-class LinterRuleConsumer @Autowired constructor(
+class FormatRuleConsumer @Autowired constructor(
     redisTemplate: ReactiveRedisTemplate<String, String>,
-    @Value("\${stream.lint.key}") streamKey: String,
-    @Value("\${groups.lint}") groupId: String,
-    private val lintService: LinterService,
+    @Value("\${stream.format.key}") streamKey: String,
+    @Value("\${groups.format}") groupId: String,
+    private val formatService: FormatterService,
     private val assetService: AssetService,
     private val snippetService: SnippetService,
 ) : RedisStreamConsumer<String>(streamKey, groupId, redisTemplate) {
@@ -42,35 +40,41 @@ class LinterRuleConsumer @Autowired constructor(
     }
 
     override fun onMessage(record: ObjectRecord<String, String>) {
-        println("starting liniting asyncronically")
+        println("starting formatting asyncronically")
         val message: SnippetMessage = jacksonObjectMapper().readValue(record.value, SnippetMessage::class.java)
         try {
-            val lintRules: JsonObject = getRulesAsJsonObject(message)
-            println("lintRules $lintRules")
+            val formatRules: String = getRulesAsString(message)
             val content = assetService.get("snippets", message.snippetId)
             println("content of snippet $content")
-            val warnings = lintService.analyze("1.1", content, lintRules)
-            val success = warnings.isEmpty()
-            snippetService.updateStatus(message.jwtToken, message.snippetId, if (success) Compliance.SUCCESS else Compliance.FAILED)
-
-            println("Successfully linted: ${record.id}")
+            val formattedCode = formatService.format("1.1", content, formatRules)
+            assetService.put("snippets", message.snippetId, formattedCode)
+            println("Successfully formatted: ${record.id}")
         } catch (e: Exception) {
-            println("Error linting: ${e.message}")
-            snippetService.updateStatus(message.jwtToken, message.snippetId, Compliance.FAILED)
+            println("Error formatting: ${e.message}")
         }
     }
 
-    private fun getRulesAsJsonObject(message: SnippetMessage): JsonObject {
+    private fun getRulesAsString(message: SnippetMessage): String {
         return try {
             println("getting rules from asset service")
-            val lintRulesJson = assetService.get("lint-rules", message.userId)
-            println("rules gotten at consumer: $lintRulesJson")
+            val formatRulesJson = assetService.get("format-rules", message.userId)
             val objectMapper = jacksonObjectMapper()
-            val lintRules: List<Rule> = objectMapper.readValue(lintRulesJson, object : TypeReference<List<Rule>>() {})
-            lintService.convertActiveRulesToJsonObject(lintRules)
+            val formatRules: List<Rule> = objectMapper.readValue(formatRulesJson, object : TypeReference<List<Rule>>() {})
+
+            val transformedRules = formatRules.map { rule ->
+                rule.copy(name = camelToSnakeCase(rule.name))
+            }
+
+            objectMapper.writeValueAsString(transformedRules)
         } catch (e: Exception) {
             println("Error deserializing lint rules: ${e.message}")
-            JsonObject(emptyMap())
+            ""
         }
+    }
+
+    private fun camelToSnakeCase(camelCase: String): String {
+        return camelCase
+            .replace(Regex("([a-z])([A-Z])"), "$1_$2")
+            .lowercase()
     }
 }
