@@ -24,10 +24,9 @@ class RequestLogFilter : Filter {
         chain: FilterChain
     ) {
         if (request is HttpServletRequest && response is HttpServletResponse) {
-            val httpRequest = request
 
-            val uri = httpRequest.requestURI
-            val method = httpRequest.method
+            val uri = request.requestURI
+            val method = request.method
             val prefix = "$method $uri"
 
             try {
@@ -39,7 +38,7 @@ class RequestLogFilter : Filter {
                 val correlationId = MDC.get(CorrelationIdFilter.CORRELATION_ID_KEY) ?: "none"
 
                 // Include correlation ID in the log
-                logger.info("[id: {}] {} - {}", correlationId, prefix, statusCode)
+                logger.info("[{}] {} - {}", correlationId, prefix, statusCode)
             }
         } else {
             chain.doFilter(request, response)

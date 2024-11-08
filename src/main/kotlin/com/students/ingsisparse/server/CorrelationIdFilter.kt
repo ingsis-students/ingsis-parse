@@ -16,11 +16,6 @@ import java.util.UUID
 @Component
 @Order(1)
 class CorrelationIdFilter : Filter {
-    companion object {
-        const val CORRELATION_ID_KEY: String = "correlation-id"
-        const val CORRELATION_ID_HEADER: String = "X-Correlation-Id"
-    }
-
     @Throws(IOException::class, ServletException::class)
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
         if (request is HttpServletRequest && response is HttpServletResponse) {
@@ -41,5 +36,10 @@ class CorrelationIdFilter : Filter {
         } else {
             chain.doFilter(request, response)
         }
+    }
+
+    companion object {
+        const val CORRELATION_ID_KEY: String = "correlation-id"
+        const val CORRELATION_ID_HEADER: String = "X-Correlation-Id"
     }
 }
