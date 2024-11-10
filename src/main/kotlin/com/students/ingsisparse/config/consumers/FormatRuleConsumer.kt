@@ -65,7 +65,7 @@ class FormatRuleConsumer @Autowired constructor(
             val rulesMap = mutableMapOf<String, Any?>()
             formatRules.forEach { rule ->
                 val key = camelToSnakeCase(rule.name)
-                val value = if (rule.isActive) rule.value else null
+                val value = if (rule.isActive) rule.value else "null" // filter by active ones.
                 rulesMap[key] = value
             }
 
