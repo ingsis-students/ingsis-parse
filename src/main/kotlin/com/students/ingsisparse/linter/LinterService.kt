@@ -28,8 +28,12 @@ class LinterService {
 
         val activeRuleMap = rules
             .filter { it.isActive }
-            .associate { rule -> rule.name to objectMapper.valueToTree<JsonNode>(rule.value ?: JsonNull) }
-
+            .associate { rule ->
+                if (rule.value is String) {
+                    rule.name to objectMapper.valueToTree<JsonNode>(rule.value)
+                } else
+                    rule.name to objectMapper.valueToTree<JsonNode>(rule.value ?: JsonNull)
+            }
         return JsonConverter.convertToKotlinxJson(activeRuleMap)
     }
 }
