@@ -50,5 +50,7 @@ jobs:
     with:
       host: ${{ github.ref_name == 'main' && '20.70.208.179' || '20.213.8.120' }}
       user: ${{ github.ref_name == 'main' && 'students' || 'matichialva' }}
+      image_name: ${{ github.ref_name == 'main' && 'ingsis-students/ingsis-parse' || 'ingsis-students/ingsis-parse-prod' }}
+      container_name: 'printscript-api'
     secrets:
       key: ${{ secrets.SSH_PRIVATE_KEY }}
