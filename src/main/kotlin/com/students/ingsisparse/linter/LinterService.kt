@@ -3,6 +3,7 @@ package com.students.ingsisparse.linter
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.students.ingsisparse.types.Rule
+import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import org.Runner
 import org.springframework.stereotype.Service
@@ -27,7 +28,7 @@ class LinterService {
 
         val activeRuleMap = rules
             .filter { it.isActive }
-            .associate { rule -> rule.name to objectMapper.valueToTree<JsonNode>(rule.value) }
+            .associate { rule -> rule.name to objectMapper.valueToTree<JsonNode>(rule.value ?: JsonNull) }
 
         return JsonConverter.convertToKotlinxJson(activeRuleMap)
     }
