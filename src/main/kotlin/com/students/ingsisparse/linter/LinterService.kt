@@ -2,8 +2,8 @@ package com.students.ingsisparse.linter
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.students.ingsisparse.types.Rule
-import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import org.Runner
 import org.springframework.stereotype.Service
@@ -26,14 +26,18 @@ class LinterService {
          **/
         val objectMapper = ObjectMapper()
 
-        val activeRuleMap = rules
+        // create the jackson representation
+        val activeRuleMap: Map<String, JsonNode> = rules
             .filter { it.isActive }
             .associate { rule ->
-                if (rule.value is String) {
-                    rule.name to objectMapper.valueToTree<JsonNode>(rule.value)
-                } else
-                    rule.name to objectMapper.valueToTree<JsonNode>(rule.value ?: JsonNull)
+                val key = rule.name
+                val value: JsonNode = when (rule.value) {
+                    null -> JsonNodeFactory.instance.nullNode()
+                    is String -> JsonNodeFactory.instance.textNode(rule.value)
+                    else -> objectMapper.valueToTree(rule.value)
+                }
+                key to value
             }
-        return JsonConverter.convertToKotlinxJson(activeRuleMap)
+        return JsonConverter.convertToKotlinxJson(activeRuleMap) // json representation
     }
 }
