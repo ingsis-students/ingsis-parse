@@ -12,4 +12,13 @@ class AssetService(private val restTemplate: RestTemplate) {
         )
         return response ?: "Search in $directory not found"
     }
+
+    fun put(directory: String, id: Long, content: String): String {
+        restTemplate.put(
+            "http://asset-api:8080/v1/asset/$directory/$id",
+            content,
+            String::class.java
+        )
+        return "Snippet updated"
+    }
 }

@@ -1,4 +1,4 @@
-package com.students.ingsisparse.linter.consumers
+package com.students.ingsisparse.config.consumers
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
