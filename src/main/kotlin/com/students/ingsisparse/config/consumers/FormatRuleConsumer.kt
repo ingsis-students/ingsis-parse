@@ -44,6 +44,7 @@ class FormatRuleConsumer @Autowired constructor(
         val message: SnippetMessage = jacksonObjectMapper().readValue(record.value, SnippetMessage::class.java)
         try {
             val formatRules: String = getRulesAsString(message)
+            println("rules as string in formatRuleConsumer: $formatRules")
             val content = assetService.get("snippets", message.snippetId)
             println("content of snippet $content")
             val formattedCode = formatService.format("1.1", content, formatRules)
