@@ -12,7 +12,7 @@ class FormatterService {
     fun format(version: String, code: String, rules: String): String {
         val reader = StringReader(code)
         val runner = Runner(version, reader)
-
+        println("en formatterService el código es: $code")
         val result = runner.format(rules, version)
         return result.formattedCode
     }
