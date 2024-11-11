@@ -33,7 +33,14 @@ class LinterService {
                 val key = rule.name
                 val value: JsonNode = when (rule.value) {
                     null -> JsonNodeFactory.instance.nullNode()
-                    is String -> JsonNodeFactory.instance.textNode(rule.value)
+                    is String -> when (key) {
+                        "NamingFormatCheck" -> {
+                            val namingPatternNode = objectMapper.createObjectNode()
+                            namingPatternNode.put("namingPatternName", rule.value)
+                            namingPatternNode
+                        }
+                        else -> JsonNodeFactory.instance.textNode(rule.value)
+                    }
                     else -> objectMapper.valueToTree(rule.value)
                 }
                 key to value
