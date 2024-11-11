@@ -14,7 +14,8 @@ class FormatterController(private val formatterService: FormatterService) {
         val version = formatDto.version
         val code = formatDto.code
         val rules = formatDto.rules.toString()
+        val activeRules = formatterService.getActiveAdaptedRules(rules)
 
-        return formatterService.format(version, code, rules)
+        return formatterService.format(version, code, activeRules)
     }
 }
