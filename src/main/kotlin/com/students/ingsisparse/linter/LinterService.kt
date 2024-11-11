@@ -32,7 +32,19 @@ class LinterService {
             .associate { rule ->
                 val key = rule.name
                 val value: JsonNode = when (rule.value) {
-                    null -> JsonNodeFactory.instance.nullNode()
+                    null -> when (key) {
+                        "PrintUseCheck" -> {
+                            val printUseNode = objectMapper.createObjectNode()
+                            printUseNode.put("printlnCheckEnabled", true)
+                            printUseNode
+                        }
+                        "ReadInputCheck" -> {
+                            val readInputNode = objectMapper.createObjectNode()
+                            readInputNode.put("readInputCheckEnabled", true)
+                            readInputNode
+                        }
+                        else -> JsonNodeFactory.instance.nullNode()
+                    }
                     is String -> when (key) {
                         "NamingFormatCheck" -> {
                             val namingPatternNode = objectMapper.createObjectNode()
