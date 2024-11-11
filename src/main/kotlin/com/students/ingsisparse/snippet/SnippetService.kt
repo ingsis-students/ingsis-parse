@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate
 @Service
 class SnippetService(private val restTemplate: RestTemplate) {
     fun updateStatus(jwtToken: String, id: Long, status: Compliance) {
+        println("updating status to $status")
         val headers = HttpHeaders().apply {
             contentType = MediaType.APPLICATION_JSON
             set("Authorization", jwtToken)

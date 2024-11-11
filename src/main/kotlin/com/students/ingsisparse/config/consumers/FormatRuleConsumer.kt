@@ -44,6 +44,7 @@ class FormatRuleConsumer @Autowired constructor(
         val message: SnippetMessage = jacksonObjectMapper().readValue(record.value, SnippetMessage::class.java)
         try {
             val formatRules: String = getRulesAsString(message)
+            println("rules as string in formatRuleConsumer: $formatRules")
             val content = assetService.get("snippets", message.snippetId)
             println("content of snippet $content")
             val formattedCode = formatService.format("1.1", content, formatRules)
@@ -61,11 +62,15 @@ class FormatRuleConsumer @Autowired constructor(
             val objectMapper = jacksonObjectMapper()
             val formatRules: List<Rule> = objectMapper.readValue(formatRulesJson, object : TypeReference<List<Rule>>() {})
 
-            val transformedRules = formatRules.map { rule ->
-                rule.copy(name = camelToSnakeCase(rule.name))
+            val rulesMap = mutableMapOf<String, Any?>()
+            formatRules.forEach { rule ->
+                if (rule.isActive) {
+                    val key = camelToSnakeCase(rule.name)
+                    rulesMap[key] = rule.value
+                }
             }
 
-            objectMapper.writeValueAsString(transformedRules)
+            objectMapper.writeValueAsString(rulesMap)
         } catch (e: Exception) {
             println("Error deserializing lint rules: ${e.message}")
             ""

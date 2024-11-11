@@ -11,6 +11,18 @@ on:
         description: 'Virtual Machine User'
         required: true
         type: string
+      registry:
+        description: 'Docker Registry'
+        required: true
+        type: string
+      image_name:
+        description: 'Docker Image Name'
+        required: true
+        type: string
+      container_name:
+        description: 'Docker Container Name'
+        required: true
+        type: string
     secrets:
       key:
         description: 'SSH Private Key to access the virtual machine'
@@ -21,16 +33,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: executing remote ssh commands using password
-      uses: appleboy/ssh-action@v1.1.0
-      with:
-        host: ${{ inputs.host }}
-        username: ${{ inputs.user }}
-        key: ${{ secrets.key }}
-        script: |
-          cd ingsis-infra
-          sudo docker compose down
-        #  sudo docker compose up -d
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ inputs.host }}
+          username: ${{ inputs.user }}
+          key: ${{ secrets.key }}
+          script: |
+            cd ingsis-infra
+            sudo docker stop ${{ inputs.container_name }}
+            sudo docker rm ${{ inputs.container_name }}
+            sudo docker rmi ${{ inputs.registry }}/${{ inputs.image_name }}
+            sudo docker compose down
+          #  sudo docker compose up -d
