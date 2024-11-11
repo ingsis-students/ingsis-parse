@@ -1,12 +1,10 @@
 package com.students.ingsisparse.config.consumers
 
-import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.students.ingsisparse.asset.AssetService
 import com.students.ingsisparse.config.SnippetMessage
 import com.students.ingsisparse.formatter.FormatterService
 import com.students.ingsisparse.snippet.SnippetService
-import com.students.ingsisparse.types.Rule
 import java.time.Duration
 import org.austral.ingsis.redis.RedisStreamConsumer
 import org.springframework.beans.factory.annotation.Autowired
@@ -59,27 +57,10 @@ class FormatRuleConsumer @Autowired constructor(
         return try {
             println("getting rules from asset service")
             val formatRulesJson = assetService.get("format-rules", message.userId)
-            val objectMapper = jacksonObjectMapper()
-            val formatRules: List<Rule> = objectMapper.readValue(formatRulesJson, object : TypeReference<List<Rule>>() {})
-
-            val rulesMap = mutableMapOf<String, Any?>()
-            formatRules.forEach { rule ->
-                if (rule.isActive) {
-                    val key = camelToSnakeCase(rule.name)
-                    rulesMap[key] = rule.value
-                }
-            }
-
-            objectMapper.writeValueAsString(rulesMap)
+            formatService.getActiveAdaptedRules(formatRulesJson)
         } catch (e: Exception) {
             println("Error deserializing lint rules: ${e.message}")
             ""
         }
-    }
-
-    private fun camelToSnakeCase(camelCase: String): String {
-        return camelCase
-            .replace(Regex("([a-z])([A-Z])"), "$1_$2")
-            .lowercase()
     }
 }
