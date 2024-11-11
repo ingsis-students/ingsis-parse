@@ -49,7 +49,7 @@ class LinterRuleConsumer @Autowired constructor(
             println("lintRules $lintRules")
             val content = assetService.get("snippets", message.snippetId)
             println("content of snippet $content")
-            val warnings = lintService.analyze("1.1", content, lintRules)
+            val warnings = lintService.analyze(message.version, content, lintRules)
             val success = warnings.isEmpty()
             snippetService.updateStatus(message.jwtToken, message.snippetId, if (success) Compliance.SUCCESS else Compliance.FAILED)
 

@@ -45,7 +45,7 @@ class FormatRuleConsumer @Autowired constructor(
             println("rules as string in formatRuleConsumer: $formatRules")
             val content = assetService.get("snippets", message.snippetId)
             println("content of snippet $content")
-            val formattedCode = formatService.format("1.1", content, formatRules)
+            val formattedCode = formatService.format(message.version, content, formatRules)
             assetService.put("snippets", message.snippetId, formattedCode)
             println("Successfully formatted: ${record.id}")
         } catch (e: Exception) {
