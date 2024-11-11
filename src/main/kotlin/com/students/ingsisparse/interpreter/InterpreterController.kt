@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/printscript")
-class InterpreterController(private val interpreterService: InterpreterService) {
+class InterpreterController(
+    private val interpreterService: InterpreterService,
+) {
 
     /**
      * Interpret the given code and return a list with all the outputs
@@ -31,11 +33,11 @@ class InterpreterController(private val interpreterService: InterpreterService) 
     @PostMapping("/test")
     fun test(@RequestBody testDto: TestDto): ResponseEntity<String> {
         val version = testDto.version
-        val code = testDto.code
+        val snippetId = testDto.snippetId
         val inputs = testDto.inputs
         val outputs = testDto.outputs
 
-        val response = interpreterService.test(version, code, inputs, outputs)
+        val response = interpreterService.test(version, snippetId, inputs, outputs)
 
         return if (response.isEmpty()) {
             ResponseEntity.ok("success")
