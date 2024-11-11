@@ -1,12 +1,13 @@
 package com.students.ingsisparse.interpreter
 
+import com.students.ingsisparse.asset.AssetService
 import org.Runner
 import org.springframework.stereotype.Service
 import java.io.StringReader
 import java.util.LinkedList
 
 @Service
-class InterpreterService {
+class InterpreterService(private val assetService: AssetService) {
     /**
      * Interpret the given code and return a list with all the outputs
      * @param version the version of the language
@@ -31,7 +32,10 @@ class InterpreterService {
      * @param expectedOutputs the expected outputs
      * @return a list with all the errors. If there are no errors, the list will be empty
      */
-    fun test(version: String, code: String, inputs: List<String>, expectedOutputs: List<String>): List<String> {
+    fun test(version: String, snippetId: Long, inputs: List<String>, expectedOutputs: List<String>): List<String> {
+
+        val code = assetService.get("snippets", snippetId)
+
         val reader = StringReader(code)
         val runner = Runner(version, reader)
 
