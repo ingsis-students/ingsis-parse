@@ -53,6 +53,10 @@ class LinterRuleConsumer @Autowired constructor(
             val success = warnings.isEmpty()
             snippetService.updateStatus(message.jwtToken, message.snippetId, if (success) Compliance.SUCCESS else Compliance.FAILED)
 
+            println("Storing warnings for snippet: ${message.snippetId}")
+            val warningsJson = jacksonObjectMapper().writeValueAsString(warnings)
+            assetService.put("lint-warnings", message.snippetId, warningsJson)
+
             println("Successfully linted: ${record.id}")
         } catch (e: Exception) {
             println("Error linting: ${e.message}")
