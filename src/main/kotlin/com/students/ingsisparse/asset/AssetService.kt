@@ -1,5 +1,6 @@
 package com.students.ingsisparse.asset
 
+import com.students.ingsissnippet.constants.ASSETSERVICE_URL
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 
@@ -7,7 +8,7 @@ import org.springframework.web.client.RestTemplate
 class AssetService(private val restTemplate: RestTemplate) {
     fun get(directory: String, id: Long): String {
         val response = restTemplate.getForObject(
-            "http://asset-api:8080/v1/asset/$directory/$id",
+            "$ASSETSERVICE_URL/$directory/$id",
             String::class.java
         )
         return response ?: "Search in $directory not found"
@@ -15,7 +16,7 @@ class AssetService(private val restTemplate: RestTemplate) {
 
     fun put(directory: String, id: Long, content: String): String {
         restTemplate.put(
-            "http://asset-api:8080/v1/asset/$directory/$id",
+            "$ASSETSERVICE_URL/$directory/$id",
             content,
             String::class.java
         )
