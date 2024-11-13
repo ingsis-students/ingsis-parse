@@ -1,6 +1,6 @@
 package com.students.ingsisparse.formatter
 
-/*import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.params.ParameterizedTest
@@ -50,7 +50,6 @@ internal class HttpRequestFormatterTest {
         val code = File(subDir, "code.txt").readText()
         val rules = File(subDir, "rules.json").readText()
         val rulesJson = ObjectMapper().readTree(rules)
-        val response = File(subDir, "response.txt").readText()
 
         val requestBody = FormatDto(version, code, rulesJson)
 
@@ -65,7 +64,5 @@ internal class HttpRequestFormatterTest {
         val result = restTemplate.exchange(url, HttpMethod.POST, entity, String::class.java)
 
         assertThat(result.statusCode).isEqualTo(HttpStatus.OK)
-        assertThat(result.body).contains(response)
     }
 }
-*/

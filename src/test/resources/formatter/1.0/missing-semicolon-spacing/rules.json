@@ -1,6 +1,6 @@
-{
-  "space_before_colon": true,
-  "space_after_colon": true,
-  "space_around_equals": true,
-  "newline_after_println": 2
-}
+[
+  { "name": "space_before_colon", "value": true },
+  { "name": "space_after_colon", "value": true },
+  { "name": "space_around_equals", "value": true },
+  { "name": "newline_after_println", "value": 2 }
+]

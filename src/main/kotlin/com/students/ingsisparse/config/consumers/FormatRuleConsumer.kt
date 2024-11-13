@@ -37,7 +37,7 @@ class FormatRuleConsumer @Autowired constructor(
             .build()
     }
 
-    override fun onMessage(record: ObjectRecord<String, String>) {
+    public override fun onMessage(record: ObjectRecord<String, String>) {
         println("starting formatting asyncronically")
         val message: SnippetMessage = jacksonObjectMapper().readValue(record.value, SnippetMessage::class.java)
         try {
