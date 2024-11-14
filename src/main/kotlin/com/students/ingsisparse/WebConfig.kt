@@ -11,7 +11,12 @@ class WebConfig : WebMvcConfigurer {
     override fun addCorsMappings(registry: CorsRegistry) {
         registry
             .addMapping("/**")
-            .allowedOrigins("*") // Allow all origins
+            .allowedOrigins(
+                "http://localhost:5173",
+                "http://localhost",
+                "https://ingsis-students.duckdns.org",
+                "https://ingsis-students-prod.duckdns.org"
+            )
             .allowedMethods("GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS")
             .allowedHeaders("*")
     }
