@@ -1,6 +1,5 @@
 package com.students.ingsisparse.interpreter
 
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -31,18 +30,12 @@ class InterpreterController(
      * @return a list with all the errors. If there are no errors, the list will be empty
      */
     @PostMapping("/test")
-    fun test(@RequestBody testDto: TestDto): ResponseEntity<String> {
+    fun test(@RequestBody testDto: TestDto): List<String> {
         val version = testDto.version
         val snippetId = testDto.snippetId
         val inputs = testDto.inputs
         val outputs = testDto.outputs
 
-        val response = interpreterService.test(version, snippetId, inputs, outputs)
-
-        return if (response.isEmpty()) {
-            ResponseEntity.ok("success")
-        } else {
-            ResponseEntity.ok("fail")
-        }
+        return interpreterService.test(version, snippetId, inputs, outputs)
     }
 }
