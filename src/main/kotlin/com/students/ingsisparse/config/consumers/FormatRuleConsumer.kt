@@ -38,16 +38,12 @@ class FormatRuleConsumer @Autowired constructor(
     }
 
     public override fun onMessage(record: ObjectRecord<String, String>) {
-        println("starting formatting asyncronically")
         val message: SnippetMessage = jacksonObjectMapper().readValue(record.value, SnippetMessage::class.java)
         try {
             val formatRules: String = getRulesAsString(message)
-            println("rules as string in formatRuleConsumer: $formatRules")
             val content = assetService.get("snippets", message.snippetId)
-            println("content of snippet $content")
             val formattedCode = formatService.format(message.version, content, formatRules)
             assetService.put("snippets", message.snippetId, formattedCode)
-            println("Successfully formatted: ${record.id}")
         } catch (e: Exception) {
             println("Error formatting: ${e.message}")
         }
@@ -55,7 +51,6 @@ class FormatRuleConsumer @Autowired constructor(
 
     private fun getRulesAsString(message: SnippetMessage): String {
         return try {
-            println("getting rules from asset service")
             val formatRulesJson = assetService.get("format-rules", message.userId)
             formatService.getActiveAdaptedRules(formatRulesJson)
         } catch (e: Exception) {

@@ -42,22 +42,16 @@ class LinterRuleConsumer @Autowired constructor(
     }
 
     public override fun onMessage(record: ObjectRecord<String, String>) {
-        println("starting liniting asyncronically")
         val message: SnippetMessage = jacksonObjectMapper().readValue(record.value, SnippetMessage::class.java)
         try {
             val lintRules: JsonObject = getRulesAsJsonObject(message)
-            println("lintRules $lintRules")
             val content = assetService.get("snippets", message.snippetId)
-            println("content of snippet $content")
             val warnings = lintService.analyze(message.version, content, lintRules)
             val success = warnings.isEmpty()
             snippetService.updateStatus(message.jwtToken, message.snippetId, if (success) Compliance.SUCCESS else Compliance.FAILED)
 
-            println("Storing warnings for snippet: ${message.snippetId}")
             val warningsJson = jacksonObjectMapper().writeValueAsString(warnings)
             assetService.put("lint-warnings", message.snippetId, warningsJson)
-
-            println("Successfully linted: ${record.id}")
         } catch (e: Exception) {
             println("Error linting: ${e.message}")
             snippetService.updateStatus(message.jwtToken, message.snippetId, Compliance.FAILED)
@@ -66,9 +60,7 @@ class LinterRuleConsumer @Autowired constructor(
 
     private fun getRulesAsJsonObject(message: SnippetMessage): JsonObject {
         return try {
-            println("getting rules from asset service")
             val lintRulesJson = assetService.get("lint-rules", message.userId)
-            println("rules gotten at consumer: $lintRulesJson")
             val objectMapper = jacksonObjectMapper()
             val lintRules: List<Rule> = objectMapper.readValue(lintRulesJson, object : TypeReference<List<Rule>>() {})
             lintService.convertActiveRulesToJsonObject(lintRules)
